@@ -1,0 +1,90 @@
+body {
+  background-color: rgb(67, 121, 156);
+}
+
+main {
+  margin: 20px auto;
+  max-width: 900px;
+  padding: 0 50px;
+}
+
+h1 {
+  font-size: 50px;
+  margin-bottom: 30px;
+}
+
+/******Vocabularies*******/
+div.vocabularies {
+  margin-top: 30px;
+}
+section.vocabulary {
+  background-color: rgba(255, 255, 255, 0.774);
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 5px;
+  border: 2px solid gray;
+}
+div.voc-name {
+  margin-bottom: 10px;
+  font-size: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+section.count-of-rep-sec {
+  padding-right: 20px;
+}
+
+a.btn {
+  margin-right: 5px;
+}
+/**********************/
+
+/*****name of vocabulary*****/
+label {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+input.form-control {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+/****************************/
+
+/**inputs in adding words**/
+div.input {
+  display: inline-block;
+  width: 45%;
+}
+div.inputs {
+  display: flex;
+  justify-content: space-between;
+}
+/**************************/
+
+/********Opened vocabulary********/
+div.container-for-word-pairs {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+p.number {
+  margin: auto 0;
+  font-size: 20px;
+}
+div.word {
+  background-color: rgba(255, 255, 255, 0.774);
+  width: 45%;
+  border: 2px solid gray;
+  border-radius: 5px;
+  font-size: 20px;
+  padding: 5px 10px;
+}
+div.word-pairs {
+  display: inline-flex;
+  width: calc(100% - 200px);
+  justify-content: space-between;
+}
+div.links {
+  align-self: center;
+}
+/*********************************/
