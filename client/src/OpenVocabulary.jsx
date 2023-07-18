@@ -52,6 +52,6 @@ export default function OpenVocabulary({ id, serverBase }) {
 }
 
 OpenVocabulary.propTypes = {
-  id: PropTypes.string,
-  serverBase: PropTypes.string
+  serverBase: PropTypes.string,
+  id: PropTypes.string
 };
