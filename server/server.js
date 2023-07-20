@@ -79,14 +79,12 @@ app.post("/add-word", async (req, res) => {
   }
 });
 
-app.delete("/delete-words", async (req, res) => {
+app.delete("/delete-word", async (req, res) => {
   try {
     const vocabulary = await Vocabulary.findById(req.body.id);
 
-    req.body.indices.forEach((index) => {
-      vocabulary.firstLang.splice(index, 1);
-      vocabulary.secLang.splice(index, 1);
-    });
+    vocabulary.firstLang.splice(req.body.index, 1);
+    vocabulary.secLang.splice(req.body.index, 1);
 
     await vocabulary.save();
     res.sendStatus(200);

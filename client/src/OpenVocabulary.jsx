@@ -3,20 +3,30 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function OpenVocabulary({ id, serverBase }) {
-  const [vocabulary, setVocabulary] = useState({});
+  const [vocabulary, setVocabulary] = useState({ firstLang: [], secLang: [], name: "" });
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     getVocabulary();
-  }, []);
+  }, [refresh]);
 
-  async function getVocabulary() {
-    try {
-      const res = await fetch(`${serverBase}/get-vocabulary/${id}`);
-      
-      setVocabulary(await res.json());
-    } catch (e) {
-      console.error(e);
-    }
+  function getVocabulary() {
+    fetch(`${serverBase}/get-vocabulary/${id}`)
+      .then(res => res.json())
+      .then(voc => setVocabulary(voc))
+      .catch(e => console.error(e))
+  }
+
+  function deleteWord(index) {
+    fetch(`${serverBase}/delete-word`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ index, id }),
+    })
+      .then(() => setRefresh(!refresh))
+      .catch(e => console.error(e));
   }
 
   return (
@@ -25,7 +35,7 @@ export default function OpenVocabulary({ id, serverBase }) {
       <Link className="btn btn-secondary" to="/list-vocabularies">
         Cancel
       </Link>
-      <Link className="btn btn-success" to="/list-vocabularies">
+      <Link className="btn btn-success" to="/add-word">
         Add words
       </Link>
       <Link className="btn btn-primary" to="/list-vocabularies">
@@ -34,24 +44,26 @@ export default function OpenVocabulary({ id, serverBase }) {
       <Link className="btn btn-dark" to="/list-vocabularies">
         Play guessing word
       </Link>
-      {/* {vocabulary.fitstLang.map((word, index) => {
-        <div className="container-for-word-pairs">
-          <p className="number">{index + 1}</p>
-          <div className="word-pairs">
-            <div className="word">{word}</div>
-            <div className="word">{vocabulary.secLang[index]}</div>
+      {vocabulary.firstLang.map((word, index) => {
+        return (
+          <div className="container-for-word-pairs" key={index}>
+            <p className="number">{index + 1})</p>
+            <div className="word-pairs">
+              <div className="word">{word}</div>
+              <div className="word">{vocabulary.secLang[index]}</div>
+            </div>
+            <div className="links">
+              <Link to="/change-word" className="btn btn-primary">Change</Link>
+              <a className="btn btn-danger" onClick={() => deleteWord(index)}>Delete</a>
+            </div>
           </div>
-          <div className="links">
-            <a href="/vocabularies/change-words/<%= vocabulary.id %>/<%= i %>" className="btn btn-primary">Change</a>
-            <a href="/vocabularies/delete-words/<%= vocabulary.id %>/<%= i %>" className="btn btn-danger">Delete</a>
-          </div>
-        </div>
-      })} */}
+        );
+      })}
     </main>
   );
 }
 
 OpenVocabulary.propTypes = {
+  id: PropTypes.string,
   serverBase: PropTypes.string,
-  id: PropTypes.string
 };

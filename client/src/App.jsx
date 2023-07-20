@@ -2,6 +2,8 @@ import ListVocabularies from "./ListVocabularies";
 import NewVocabulary from "./NewVocabulary";
 import OpenVocabulary from "./OpenVocabulary";
 import RenameVocabulary from "./RenameVocabulary";
+import AddWords from "./AddWords";
+import ChangeWords from "./ChangeWords";
 import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -40,6 +42,18 @@ export default function App() {
         path="/rename-vocabulary"
         element={
           <RenameVocabulary serverBase={serverBase} id={openedVocId} />
+        }
+      />
+      <Route
+        path="/add-word"
+        element={
+          <AddWords serverBase={serverBase} id={openedVocId} />
+        }
+      />
+      <Route
+        path="/change-word"
+        element={
+          <ChangeWords serverBase={serverBase} id={openedVocId} />
         }
       />
     </Routes>

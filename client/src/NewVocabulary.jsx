@@ -9,8 +9,6 @@ export default function NewVocabulary({ serverBase }) {
   async function createVocabulary(e) {
     e.preventDefault();
 
-    if (vocNameRef.current.value.trim() === "") return;
-
     fetch(`${serverBase}/create-vocabulary`, {
       method: "POST",
       headers: {
