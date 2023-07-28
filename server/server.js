@@ -1,112 +1,165 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const Vocabulary = require("./models/Vocabulary");
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import express, { json } from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import mysql from "mysql";
 
 const app = express();
-const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost/vocDb");
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "vocDb",
+});
+
+db.connect(err => {
+  if (err) throw err;
+});
+
+function handleError(res, err) {
+  res.sendStatus(err.code).json({ error: err.message });
+}
+
+async function getVocabularyObj(vocabulary) {
+  const queryWords = `SELECT * FROM words WHERE vocabulary_id = '${vocabulary.id}';`;
+
+  vocabulary.firstLang = [];
+  vocabulary.secLang = [];
+  vocabulary.wordsIds = [];
+
+  try {
+    const words = await new Promise((resolve, reject) => {
+      db.query(queryWords, (err, words) => {
+        if (err) reject(err);
+        resolve(words);
+      });
+    });
+
+    for (let j = 0; j < words.length; j++) {
+      const wordObj = words[j];
+      vocabulary.firstLang.push(wordObj.word);
+      vocabulary.secLang.push(wordObj.translation);
+      vocabulary.wordsIds.push(wordObj.id);
+    }
+  } catch (err) {
+    handleError(res, err);
+  }
+
+  return vocabulary;
+}
 
 app.get("/get-vocabularies", async (req, res) => {
-  try {
-    res.json(await Vocabulary.find());
-  } catch (e) {
-    console.error(e);
-  }
+  const queryVocs = `SELECT * FROM vocabularies;`;
+  
+  db.query(queryVocs, async (err, vocabularies) => {
+    if (err) handleError(res, err);
+    
+    for (let i = 0; i < vocabularies.length; i++) {
+      await getVocabularyObj(vocabularies[i]);
+    }
+
+    return res.json(vocabularies);
+  });
 });
 
 app.get("/get-vocabulary/:id", async (req, res) => {
-  try {
-    res.json(await Vocabulary.findById(req.params.id));
-  } catch (e) {
-    console.error(e);
-  }
+  const query = `SELECT * FROM vocabularies WHERE id = '${req.params.id}';`;
+
+  db.query(query, async (err, vocabularies) => {
+    if (err) handleError(res, err);
+
+    if (vocabularies.length === 0) return res.json({ message: "Vocabulary not found" });
+
+    return res.json(await getVocabularyObj(vocabularies[0]));
+  });
 });
 
 app.post("/create-vocabulary", async (req, res) => {
-  const vocabulary = new Vocabulary({
-    name: req.body.name,
-  });
+  const query = `INSERT INTO vocabularies (id, name)
+  VALUES (UUID(), '${req.body.name}');`;
 
-  try {
-    res.json(await vocabulary.save());
-  } catch (e) {
-    console.error(e);
-  }
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    return res.sendStatus(200);
+  })
 });
 
 app.put("/rename-vocabulary", async (req, res) => {
-  try {
-    const vocabulary = await Vocabulary.findById(req.body.id);
+  const query = `UPDATE vocabularies
+  SET name = '${req.body.name}'
+  WHERE id = '${req.body.id}';`;
 
-    vocabulary.name = req.body.name;
-    await vocabulary.save();
-
-    res.sendStatus(200);
-  } catch (e) {
-    console.error(e);
-  }
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    
+    return res.sendStatus(200);
+  });
 });
 
 app.delete("/delete-vocabulary", async (req, res) => {
-  try {
-    await Vocabulary.findByIdAndDelete(req.body.id);
+  const queryWords = `DELETE FROM words
+  WHERE vocabulary_id = '${req.body.id}';`;
+  
+  const queryVocs = `DELETE FROM vocabularies
+  WHERE id = '${req.body.id}';`;
 
-    res.sendStatus(200);
-  } catch (e) {
-    console.error(e);
+  try {
+    const idGood = await new Promise((resolve, reject) => {
+      db.query(queryVocs, (err) => {
+        if (err) reject(err);
+        resolve(true);
+      });
+    });
+  
+    if (idGood) db.query(queryWords, (err) => {
+      if (err) handleError(res, err);
+      return res.sendStatus(200);
+    });
+  } catch (err) {
+    handleError(res, err);
   }
 });
 
 app.post("/add-word", async (req, res) => {
-  try {
-    const vocabulary = await Vocabulary.findById(req.body.id);
+  const query = `INSERT INTO words (word, translation, vocabulary_id)
+  VALUES ('${req.body.word}', '${req.body.transl}', '${req.body.id}');`;
 
-    vocabulary.firstLang.push(req.body.word);
-    vocabulary.secLang.push(req.body.transl);
-    await vocabulary.save();
-
-    res.sendStatus(200);
-  } catch (e) {
-    console.error(e);
-  }
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    
+    return res.sendStatus(200);
+  });
 });
 
 app.delete("/delete-word", async (req, res) => {
-  try {
-    const vocabulary = await Vocabulary.findById(req.body.id);
+  const query = `DELETE FROM words
+  WHERE id = '${req.body.id}';`;
 
-    vocabulary.firstLang.splice(req.body.index, 1);
-    vocabulary.secLang.splice(req.body.index, 1);
-
-    await vocabulary.save();
-    res.sendStatus(200);
-  } catch (e) {
-    console.error(e);
-  }
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    
+    return res.sendStatus(200);
+  });
 });
 
 app.put("/change-word", async (req, res) => {
-  try {
-    const vocabulary = await Vocabulary.findById(req.body.id);
+  const query = `UPDATE words
+  SET word = '${req.body.word}', translation = '${req.body.transl}'
+  WHERE id = '${req.body.id}';`;
 
-    vocabulary.firstLang[req.body.index] = req.body.word;
-    vocabulary.secLang[req.body.index] = req.body.transl;
-    await vocabulary.save();
-
-    res.sendStatus(200);
-  } catch (e) {
-    console.error(e);
-  }
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    
+    return res.sendStatus(200);
+  });
 });
 
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log("It's alive on http://localhost:" + PORT);
 });
