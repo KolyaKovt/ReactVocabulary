@@ -25,7 +25,7 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
       body: JSON.stringify({ id }),
     }).catch((e) => console.error(e));
 
-    setVocabularies((currVocab) => currVocab.filter((voc) => voc._id !== id));
+    setVocabularies((currVocab) => currVocab.filter((voc) => voc.id !== id));
   }
 
   return (
@@ -37,7 +37,7 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
       <div className="vocabularies">
         {vocabularies.map((vocabulary) => {
           return (
-            <section className="vocabulary" key={vocabulary._id}>
+            <section className="vocabulary" key={vocabulary.id}>
               <div className="voc-name">
                 <section>{vocabulary.name}</section>
                 <section className="count-of-rep-sec">
@@ -46,7 +46,7 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
               </div>
               <Link
                 className="btn btn-secondary"
-                onClick={() => setOpenedVocId(vocabulary._id)}
+                onClick={() => setOpenedVocId(vocabulary.id)}
                 to="/open-vocabulary"
               >
                 Open
@@ -54,13 +54,13 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
               <Link
                 className="btn btn-primary"
                 to="/rename-vocabulary"
-                onClick={() => setOpenedVocId(vocabulary._id)}
+                onClick={() => setOpenedVocId(vocabulary.id)}
               >
                 Rename
               </Link>
               <a
                 className="btn btn-danger"
-                onClick={async () => deleteVocabulary(vocabulary._id)}
+                onClick={async () => deleteVocabulary(vocabulary.id)}
               >
                 Delete
               </a>

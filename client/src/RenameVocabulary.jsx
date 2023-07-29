@@ -1,27 +1,47 @@
 import PropTypes from "prop-types";
 import FormVocabulary from "./_form_vocabulary";
 import { Link, useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function RenameVocabulary({ serverBase, id }) {
+  const [vocabulary, setVocabulary] = useState({
+    name: "",
+    firstLang: [],
+    secLang: [],
+  });
+
   const vocNameRef = useRef();
   const navigate = useNavigate();
 
-  function renameVocabulary(e) {
+  useEffect(() => {
+    vocNameRef.current.value = vocabulary.name;
+  }, [vocabulary]);
+
+  useEffect(() => {
+    getVocabulary();
+  }, []);
+
+  function getVocabulary() {
+    fetch(`${serverBase}/get-vocabulary/${id}`)
+      .then(res => res.json())
+      .then(voc => setVocabulary(voc))
+      .catch(e => console.error(e));
+  }
+
+  async function renameVocabulary(e) {
     e.preventDefault();
 
     if (vocNameRef.current.value.trim() === "") return;
 
-    fetch(`${serverBase}/rename-vocabulary`, {
+    await fetch(`${serverBase}/rename-vocabulary`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: id, name: vocNameRef.current.value }),
-    }).catch((e) => console.error(e));
+      body: JSON.stringify({ id, name: vocNameRef.current.value }),
+    }).catch(e => console.error(e));
 
-    vocNameRef.current.value = "";
-    navigate('/list-vocabularies');
+    navigate("/list-vocabularies");
   }
 
   return (

@@ -1,13 +1,20 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FormWord from "./_form_word";
 
-export default function ChangeWords({ id, serverBase }) {
-  const [vocName, setVocName] = useState("");
+export default function ChangeWords({ id, serverBase, index }) {
+  const [vocabulary, setVocabulary] = useState({ name: "", firstLang: [], secLang: [] });
 
   const wordRef = useRef();
   const translRef = useRef();
+
+  useEffect(() => {
+    wordRef.current.value = vocabulary.firstLang[index];
+    translRef.current.value = vocabulary.secLang[index];
+  }, [vocabulary, index]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getVocabulary();
@@ -16,29 +23,28 @@ export default function ChangeWords({ id, serverBase }) {
   function getVocabulary() {
     fetch(`${serverBase}/get-vocabulary/${id}`)
       .then(res => res.json())
-      .then(voc => setVocName(voc.name))
-      .catch(e => console.error(e));
+      .then(voc => setVocabulary(voc))
+      .catch(err => console.error(err));
   }
 
-  function changeWord(e) {
+  async function changeWord(e) {
     e.preventDefault();
 
-    fetch(`${serverBase}/change-word`, {
+    await fetch(`${serverBase}/change-word`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, word: wordRef.current.value, transl: translRef.current.value }),
+      body: JSON.stringify({ id: vocabulary.wordsIds[index], word: wordRef.current.value, transl: translRef.current.value }),
     })
-      .catch(e => console.error(e));
+      .catch(err => console.error(err));
     
-    wordRef.current.value = "";
-    translRef.current.value = "";
+    navigate('/open-vocabulary');
   }
 
   return (
     <main>
-      <h1>Changing words in: {vocName}</h1>
+      <h1>Changing words in: {vocabulary.name}</h1>
       <form onSubmit={changeWord}>
         <FormWord wordRef={wordRef} translRef={translRef} />
         <Link className="btn btn-secondary" to="/open-vocabulary">
@@ -53,4 +59,5 @@ export default function ChangeWords({ id, serverBase }) {
 ChangeWords.propTypes = {
   id: PropTypes.string,
   serverBase: PropTypes.string,
+  index: PropTypes.number
 };

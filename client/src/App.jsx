@@ -15,9 +15,18 @@ export default function App() {
     if (storedOpenedVocId) return storedOpenedVocId;
   });
 
+  const [index, setIndex] = useState(() => {
+    const storedIndex = localStorage.getItem("index");
+    if (storedIndex) return storedIndex;
+  });
+
   useEffect(() => {
     localStorage.setItem("openedVocId", openedVocId);
   }, [openedVocId]);
+
+  useEffect(() => {
+    localStorage.setItem("index", index);
+  }, [index]);
 
   return (
     <Routes>
@@ -36,24 +45,26 @@ export default function App() {
       />
       <Route
         path="/open-vocabulary"
-        element={<OpenVocabulary serverBase={serverBase} id={openedVocId} />}
+        element={
+          <OpenVocabulary
+            serverBase={serverBase}
+            id={openedVocId}
+            setIndex={setIndex}
+          />
+        }
       />
       <Route
         path="/rename-vocabulary"
-        element={
-          <RenameVocabulary serverBase={serverBase} id={openedVocId} />
-        }
+        element={<RenameVocabulary serverBase={serverBase} id={openedVocId} />}
       />
       <Route
         path="/add-word"
-        element={
-          <AddWords serverBase={serverBase} id={openedVocId} />
-        }
+        element={<AddWords serverBase={serverBase} id={openedVocId} />}
       />
       <Route
         path="/change-word"
         element={
-          <ChangeWords serverBase={serverBase} id={openedVocId} />
+          <ChangeWords serverBase={serverBase} id={openedVocId} index={index} />
         }
       />
     </Routes>

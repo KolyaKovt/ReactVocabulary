@@ -2,8 +2,12 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function OpenVocabulary({ id, serverBase }) {
-  const [vocabulary, setVocabulary] = useState({ firstLang: [], secLang: [], name: "" });
+export default function OpenVocabulary({ id, serverBase, setIndex }) {
+  const [vocabulary, setVocabulary] = useState({
+    firstLang: [],
+    secLang: [],
+    name: "",
+  });
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -14,7 +18,7 @@ export default function OpenVocabulary({ id, serverBase }) {
     fetch(`${serverBase}/get-vocabulary/${id}`)
       .then(res => res.json())
       .then(voc => setVocabulary(voc))
-      .catch(e => console.error(e))
+      .catch(e => console.error(e));
   }
 
   function deleteWord(index) {
@@ -23,7 +27,7 @@ export default function OpenVocabulary({ id, serverBase }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ index, id }),
+      body: JSON.stringify({ id: vocabulary.wordsIds[index] }),
     })
       .then(() => setRefresh(!refresh))
       .catch(e => console.error(e));
@@ -53,8 +57,16 @@ export default function OpenVocabulary({ id, serverBase }) {
               <div className="word">{vocabulary.secLang[index]}</div>
             </div>
             <div className="links">
-              <Link to="/change-word" className="btn btn-primary">Change</Link>
-              <a className="btn btn-danger" onClick={() => deleteWord(index)}>Delete</a>
+              <Link
+                to="/change-word"
+                className="btn btn-primary"
+                onClick={() => setIndex(index)}
+              >
+                Change
+              </Link>
+              <a className="btn btn-danger" onClick={() => deleteWord(index)}>
+                Delete
+              </a>
             </div>
           </div>
         );
@@ -66,4 +78,5 @@ export default function OpenVocabulary({ id, serverBase }) {
 OpenVocabulary.propTypes = {
   id: PropTypes.string,
   serverBase: PropTypes.string,
+  setIndex: PropTypes.func,
 };
