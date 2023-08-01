@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -22,6 +23,8 @@ export default function ConnectingWords({ getVocabulary }) {
   const [guessedIndFL, setGuessedIndFL] = useState([]);
   const [guessedIndSL, setGuessedIndSL] = useState([]);
 
+  const [wrongAnswer, setWrongAnswer] = useState(false);
+
   useEffect(() => {
     getVocabulary(setVocabulary);
   }, []);
@@ -37,9 +40,14 @@ export default function ConnectingWords({ getVocabulary }) {
       setGuessedIndFL(current => [...current, selectedFL]);
       setGuessedIndSL(current => [...current, selectedSL]);
       countOfGuessedWords++;
+      clearSelected();
+    } else {
+      setWrongAnswer(true);
+      setTimeout(() => {
+        setWrongAnswer(false);
+        clearSelected();
+      }, 500);
     }
-
-    clearSelected();
   }, [selectedFL, selectedSL]);
 
   useEffect(() => {
@@ -121,18 +129,38 @@ export default function ConnectingWords({ getVocabulary }) {
             <div className="container-for-word-pairs" key={i}>
               <div className="word-pairs">
                 <div
-                  className={guessedIndFL.includes(i) ? "word guessed" : selectedFL === i ? "word selected" : "word"}
-                  onClick={() =>
-                    selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i)
+                  className={
+                    "word " +
+                    (wrongAnswer && selectedFL === i
+                      ? "wrong"
+                      : guessedIndFL.includes(i)
+                      ? "guessed"
+                      : selectedFL === i
+                      ? "selected"
+                      : "")
                   }
+                  onClick={() => {
+                    if (wrongAnswer) return;
+                    selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i);
+                  }}
                 >
                   {vocabulary.firstLang[wIndex]}
                 </div>
                 <div
-                  className={guessedIndSL.includes(i) ? "word guessed" : selectedSL === i ? "word selected" : "word"}
-                  onClick={() =>
-                    selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i)
+                  className={
+                    "word " +
+                    (wrongAnswer && selectedSL === i
+                      ? "wrong"
+                      : guessedIndSL.includes(i)
+                      ? "guessed"
+                      : selectedSL === i
+                      ? "selected"
+                      : "")
                   }
+                  onClick={() => {
+                    if (wrongAnswer) return;
+                    selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i);
+                  }}
                 >
                   {vocabulary.secLang[currIndSL[i]]}
                 </div>

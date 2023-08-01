@@ -99,4 +99,7 @@ div.word.selected {
 div.word.guessed {
   visibility: hidden;
 }
+div.word.wrong {
+  background-color: rgb(226, 43, 43);
+}
 /*********************************************/
