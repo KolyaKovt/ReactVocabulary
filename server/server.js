@@ -26,7 +26,7 @@ function handleError(res, err) {
 }
 
 async function getVocabularyObj(vocabulary) {
-  const queryWords = `SELECT * FROM words WHERE vocabulary_id = '${vocabulary.id}';`;
+  const queryWords = `SELECT * FROM words WHERE vocabulary_id = ${vocabulary.id};`;
 
   vocabulary.firstLang = [];
   vocabulary.secLang = [];
@@ -68,7 +68,7 @@ app.get("/get-vocabularies", async (req, res) => {
 });
 
 app.get("/get-vocabulary/:id", async (req, res) => {
-  const query = `SELECT * FROM vocabularies WHERE id = '${req.params.id}';`;
+  const query = `SELECT * FROM vocabularies WHERE id = ${req.params.id};`;
 
   db.query(query, async (err, vocabularies) => {
     if (err) handleError(res, err);
@@ -80,8 +80,8 @@ app.get("/get-vocabulary/:id", async (req, res) => {
 });
 
 app.post("/create-vocabulary", async (req, res) => {
-  const query = `INSERT INTO vocabularies (id, name)
-  VALUES (UUID(), '${req.body.name}');`;
+  const query = `INSERT INTO vocabularies (name)
+  VALUES ('${req.body.name}');`;
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
@@ -92,7 +92,7 @@ app.post("/create-vocabulary", async (req, res) => {
 app.put("/rename-vocabulary", async (req, res) => {
   const query = `UPDATE vocabularies
   SET name = '${req.body.name}'
-  WHERE id = '${req.body.id}';`;
+  WHERE id = ${req.body.id};`;
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
@@ -103,10 +103,10 @@ app.put("/rename-vocabulary", async (req, res) => {
 
 app.delete("/delete-vocabulary", async (req, res) => {
   const queryWords = `DELETE FROM words
-  WHERE vocabulary_id = '${req.body.id}';`;
+  WHERE vocabulary_id = ${req.body.id};`;
   
   const queryVocs = `DELETE FROM vocabularies
-  WHERE id = '${req.body.id}';`;
+  WHERE id = ${req.body.id};`;
 
   try {
     const idGood = await new Promise((resolve, reject) => {
@@ -127,7 +127,7 @@ app.delete("/delete-vocabulary", async (req, res) => {
 
 app.post("/add-word", async (req, res) => {
   const query = `INSERT INTO words (word, translation, vocabulary_id)
-  VALUES ('${req.body.word}', '${req.body.transl}', '${req.body.id}');`;
+  VALUES ('${req.body.word}', '${req.body.transl}', ${req.body.id});`;
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
@@ -138,7 +138,7 @@ app.post("/add-word", async (req, res) => {
 
 app.delete("/delete-word", async (req, res) => {
   const query = `DELETE FROM words
-  WHERE id = '${req.body.id}';`;
+  WHERE id = ${req.body.id};`;
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
@@ -150,7 +150,7 @@ app.delete("/delete-word", async (req, res) => {
 app.put("/change-word", async (req, res) => {
   const query = `UPDATE words
   SET word = '${req.body.word}', translation = '${req.body.transl}'
-  WHERE id = '${req.body.id}';`;
+  WHERE id = ${req.body.id};`;
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
