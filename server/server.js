@@ -53,7 +53,7 @@ async function getVocabularyObj(vocabulary) {
   return vocabulary;
 }
 
-app.get("/get-vocabularies", async (req, res) => {
+app.get("/vocabularies", async (req, res) => {
   const queryVocs = `SELECT * FROM vocabularies;`;
   
   db.query(queryVocs, async (err, vocabularies) => {
@@ -67,7 +67,7 @@ app.get("/get-vocabularies", async (req, res) => {
   });
 });
 
-app.get("/get-vocabulary/:id", async (req, res) => {
+app.get("/vocabulary/:id", async (req, res) => {
   const query = `SELECT * FROM vocabularies WHERE id = ${req.params.id};`;
 
   db.query(query, async (err, vocabularies) => {
@@ -79,7 +79,7 @@ app.get("/get-vocabulary/:id", async (req, res) => {
   });
 });
 
-app.post("/create-vocabulary", async (req, res) => {
+app.post("/vocabulary/create", async (req, res) => {
   const query = `INSERT INTO vocabularies (name)
   VALUES ('${req.body.name}');`;
 
@@ -89,7 +89,7 @@ app.post("/create-vocabulary", async (req, res) => {
   })
 });
 
-app.put("/rename-vocabulary", async (req, res) => {
+app.put("/vocabulary/rename", async (req, res) => {
   const query = `UPDATE vocabularies
   SET name = '${req.body.name}'
   WHERE id = ${req.body.id};`;
@@ -101,7 +101,7 @@ app.put("/rename-vocabulary", async (req, res) => {
   });
 });
 
-app.delete("/delete-vocabulary", async (req, res) => {
+app.delete("/vocabulary/delete", async (req, res) => {
   const queryWords = `DELETE FROM words
   WHERE vocabulary_id = ${req.body.id};`;
   
@@ -125,7 +125,7 @@ app.delete("/delete-vocabulary", async (req, res) => {
   }
 });
 
-app.post("/add-word", async (req, res) => {
+app.post("/vocabulary/words/add", async (req, res) => {
   const query = `INSERT INTO words (word, translation, vocabulary_id)
   VALUES ('${req.body.word}', '${req.body.transl}', ${req.body.id});`;
 
@@ -136,7 +136,7 @@ app.post("/add-word", async (req, res) => {
   });
 });
 
-app.delete("/delete-word", async (req, res) => {
+app.delete("/vocabulary/words/delete", async (req, res) => {
   const query = `DELETE FROM words
   WHERE id = ${req.body.id};`;
 
@@ -147,7 +147,7 @@ app.delete("/delete-word", async (req, res) => {
   });
 });
 
-app.put("/change-word", async (req, res) => {
+app.put("/vocabulary/words/change", async (req, res) => {
   const query = `UPDATE words
   SET word = '${req.body.word}', translation = '${req.body.transl}'
   WHERE id = ${req.body.id};`;
