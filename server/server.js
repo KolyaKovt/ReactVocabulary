@@ -39,18 +39,18 @@ async function getVocabularyObj(vocabulary) {
         resolve(words);
       });
     });
-
+  
     for (let j = 0; j < words.length; j++) {
       const wordObj = words[j];
       vocabulary.firstLang.push(wordObj.word);
       vocabulary.secLang.push(wordObj.translation);
       vocabulary.wordsIds.push(wordObj.id);
     }
+  
+    return vocabulary; 
   } catch (err) {
-    handleError(res, err);
+    throw err;
   }
-
-  return vocabulary;
 }
 
 app.get("/vocabularies", async (req, res) => {
@@ -59,8 +59,12 @@ app.get("/vocabularies", async (req, res) => {
   db.query(queryVocs, async (err, vocabularies) => {
     if (err) handleError(res, err);
     
-    for (let i = 0; i < vocabularies.length; i++) {
-      await getVocabularyObj(vocabularies[i]);
+    try {
+      for (let i = 0; i < vocabularies.length; i++) {
+        await getVocabularyObj(vocabularies[i]);
+      } 
+    } catch (err) {
+      handleError(res, err);
     }
 
     return res.json(vocabularies);
@@ -85,6 +89,7 @@ app.post("/vocabulary/create", async (req, res) => {
 
   db.query(query, (err) => {
     if (err) handleError(res, err);
+
     return res.sendStatus(200);
   })
 });
@@ -108,21 +113,20 @@ app.delete("/vocabulary/delete", async (req, res) => {
   const queryVocs = `DELETE FROM vocabularies
   WHERE id = ${req.body.id};`;
 
-  try {
-    const idGood = await new Promise((resolve, reject) => {
-      db.query(queryVocs, (err) => {
-        if (err) reject(err);
-        resolve(true);
-      });
-    });
   
-    if (idGood) db.query(queryWords, (err) => {
+  await new Promise(() => {
+    db.query(queryVocs, (err) => {
       if (err) handleError(res, err);
-      return res.sendStatus(200);
     });
-  } catch (err) {
-    handleError(res, err);
-  }
+  });
+
+  await new Promise(() => {
+    db.query(queryWords, (err) => {
+      if (err) handleError(res, err);
+    });
+  });
+
+  res.sendStatus(200);
 });
 
 app.post("/vocabulary/words/add", async (req, res) => {
