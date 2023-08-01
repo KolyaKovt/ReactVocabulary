@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FormWord from "./_form_word";
 
-export default function ChangeWords({ id, serverBase, index }) {
+export default function ChangeWords({ getVocabulary, serverBase, index }) {
   const [vocabulary, setVocabulary] = useState({ name: "", firstLang: [], secLang: [] });
 
   const wordRef = useRef();
@@ -17,15 +17,8 @@ export default function ChangeWords({ id, serverBase, index }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getVocabulary();
+    getVocabulary(setVocabulary);
   }, []);
-
-  function getVocabulary() {
-    fetch(`${serverBase}/get-vocabulary/${id}`)
-      .then(res => res.json())
-      .then(voc => setVocabulary(voc))
-      .catch(err => console.error(err));
-  }
 
   async function changeWord(e) {
     e.preventDefault();
@@ -57,7 +50,7 @@ export default function ChangeWords({ id, serverBase, index }) {
 }
 
 ChangeWords.propTypes = {
-  id: PropTypes.string,
+  getVocabulary: PropTypes.func,
   serverBase: PropTypes.string,
   index: PropTypes.number
 };

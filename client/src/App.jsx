@@ -1,11 +1,15 @@
+//importing dependencies
+import { Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+//importing other components
 import ListVocabularies from "./ListVocabularies";
 import NewVocabulary from "./NewVocabulary";
 import OpenVocabulary from "./OpenVocabulary";
 import RenameVocabulary from "./RenameVocabulary";
 import AddWords from "./AddWords";
 import ChangeWords from "./ChangeWords";
-import { Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import ConnectingWords from "./ConnectingWords";
 
 const serverBase = "http://localhost:3000";
 
@@ -17,7 +21,7 @@ export default function App() {
 
   const [index, setIndex] = useState(() => {
     const storedIndex = localStorage.getItem("index");
-    if (storedIndex) return storedIndex;
+    if (storedIndex) return parseInt(storedIndex);
   });
 
   useEffect(() => {
@@ -27,6 +31,13 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("index", index);
   }, [index]);
+
+  function getVocabulary(setVocabulary) {
+    fetch(`${serverBase}/get-vocabulary/${openedVocId}`)
+      .then(res => res.json())
+      .then(voc => setVocabulary(voc))
+      .catch(e => console.error(e));
+  }
 
   return (
     <Routes>
@@ -48,24 +59,39 @@ export default function App() {
         element={
           <OpenVocabulary
             serverBase={serverBase}
-            id={openedVocId}
+            getVocabulary={getVocabulary}
             setIndex={setIndex}
           />
         }
       />
       <Route
         path="/rename-vocabulary"
-        element={<RenameVocabulary serverBase={serverBase} id={openedVocId} />}
+        element={
+          <RenameVocabulary
+            serverBase={serverBase}
+            getVocabulary={getVocabulary}
+          />
+        }
       />
       <Route
         path="/add-word"
-        element={<AddWords serverBase={serverBase} id={openedVocId} />}
+        element={
+          <AddWords serverBase={serverBase} getVocabulary={getVocabulary} />
+        }
       />
       <Route
         path="/change-word"
         element={
-          <ChangeWords serverBase={serverBase} id={openedVocId} index={index} />
+          <ChangeWords
+            serverBase={serverBase}
+            getVocabulary={getVocabulary}
+            index={index}
+          />
         }
+      />
+      <Route
+        path="/play-connecting-words"
+        element={<ConnectingWords serverBase={serverBase} getVocabulary={getVocabulary} />}
       />
     </Routes>
   );

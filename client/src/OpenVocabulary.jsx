@@ -2,24 +2,22 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function OpenVocabulary({ id, serverBase, setIndex }) {
+export default function OpenVocabulary({
+  getVocabulary,
+  serverBase,
+  setIndex,
+}) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
     name: "",
   });
+
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    getVocabulary();
+    getVocabulary(setVocabulary);
   }, [refresh]);
-
-  function getVocabulary() {
-    fetch(`${serverBase}/get-vocabulary/${id}`)
-      .then(res => res.json())
-      .then(voc => setVocabulary(voc))
-      .catch(e => console.error(e));
-  }
 
   function deleteWord(index) {
     fetch(`${serverBase}/delete-word`, {
@@ -42,7 +40,7 @@ export default function OpenVocabulary({ id, serverBase, setIndex }) {
       <Link className="btn btn-success" to="/add-word">
         Add words
       </Link>
-      <Link className="btn btn-primary" to="/list-vocabularies">
+      <Link className="btn btn-primary" to="/play-connecting-words">
         Play connecting words
       </Link>
       <Link className="btn btn-dark" to="/list-vocabularies">
@@ -76,7 +74,7 @@ export default function OpenVocabulary({ id, serverBase, setIndex }) {
 }
 
 OpenVocabulary.propTypes = {
-  id: PropTypes.string,
+  getVocabulary: PropTypes.func,
   serverBase: PropTypes.string,
   setIndex: PropTypes.func,
 };

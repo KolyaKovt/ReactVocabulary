@@ -78,6 +78,7 @@ div.word {
   border-radius: 5px;
   font-size: 20px;
   padding: 5px 10px;
+  user-select: none;
 }
 div.word-pairs {
   display: inline-flex;
@@ -88,3 +89,14 @@ div.links {
   align-self: center;
 }
 /*********************************/
+
+/*********************************************/
+/********Playing connecting words*************/
+/*********************************************/
+div.word.selected {
+  background-color: rgb(43, 177, 226);
+}
+div.word.guessed {
+  visibility: hidden;
+}
+/*********************************************/

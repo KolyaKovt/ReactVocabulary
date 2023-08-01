@@ -3,7 +3,7 @@ import FormVocabulary from "./_form_vocabulary";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
-export default function RenameVocabulary({ serverBase, id }) {
+export default function RenameVocabulary({ serverBase, getVocabulary }) {
   const [vocabulary, setVocabulary] = useState({
     name: "",
     firstLang: [],
@@ -18,15 +18,8 @@ export default function RenameVocabulary({ serverBase, id }) {
   }, [vocabulary]);
 
   useEffect(() => {
-    getVocabulary();
+    getVocabulary(setVocabulary);
   }, []);
-
-  function getVocabulary() {
-    fetch(`${serverBase}/get-vocabulary/${id}`)
-      .then(res => res.json())
-      .then(voc => setVocabulary(voc))
-      .catch(e => console.error(e));
-  }
 
   async function renameVocabulary(e) {
     e.preventDefault();
@@ -38,7 +31,10 @@ export default function RenameVocabulary({ serverBase, id }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, name: vocNameRef.current.value }),
+      body: JSON.stringify({
+        id: vocabulary.id,
+        name: vocNameRef.current.value,
+      }),
     }).catch(e => console.error(e));
 
     navigate("/list-vocabularies");
@@ -60,5 +56,5 @@ export default function RenameVocabulary({ serverBase, id }) {
 
 RenameVocabulary.propTypes = {
   serverBase: PropTypes.string,
-  id: PropTypes.string,
+  getVocabulary: PropTypes.func,
 };

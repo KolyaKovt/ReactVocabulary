@@ -3,22 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import FormWord from "./_form_word";
 
-export default function AddWords({ id, serverBase }) {
-  const [vocName, setVocName] = useState("");
+export default function AddWords({ getVocabulary, serverBase }) {
+  const [vocabulary, setVocabulary] = useState({
+    firstLang: [],
+    secLang: [],
+    name: "",
+  });
 
   const wordRef = useRef();
   const translRef = useRef();
 
   useEffect(() => {
-    getVocabulary();
+    getVocabulary(setVocabulary);
   }, []);
-
-  function getVocabulary() {
-    fetch(`${serverBase}/get-vocabulary/${id}`)
-      .then(res => res.json())
-      .then(voc => setVocName(voc.name))
-      .catch(e => console.error(e));
-  }
 
   function addWord(e) {
     e.preventDefault();
@@ -28,7 +25,7 @@ export default function AddWords({ id, serverBase }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, word: wordRef.current.value, transl: translRef.current.value }),
+      body: JSON.stringify({ id: vocabulary.id, word: wordRef.current.value, transl: translRef.current.value }),
     })
       .catch(e => console.error(e));
     
@@ -38,7 +35,7 @@ export default function AddWords({ id, serverBase }) {
 
   return (
     <main>
-      <h1>Adding words in: {vocName}</h1>
+      <h1>Adding words in: {vocabulary.name}</h1>
       <form onSubmit={addWord}>
         <FormWord wordRef={wordRef} translRef={translRef} />
         <Link className="btn btn-secondary" to="/open-vocabulary">
@@ -51,6 +48,6 @@ export default function AddWords({ id, serverBase }) {
 }
 
 AddWords.propTypes = {
-  id: PropTypes.string,
+  getVocabulary: PropTypes.func,
   serverBase: PropTypes.string,
 };
