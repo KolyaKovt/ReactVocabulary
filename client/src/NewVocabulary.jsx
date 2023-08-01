@@ -9,7 +9,7 @@ export default function NewVocabulary({ serverBase }) {
   async function createVocabulary(e) {
     e.preventDefault();
 
-    fetch(`${serverBase}/create-vocabulary`, {
+    fetch(`${serverBase}/vocabulary/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ export default function NewVocabulary({ serverBase }) {
       <h1>New vocabulary</h1>
       <form onSubmit={createVocabulary}>
         <FormVocabulary vocNameRef={vocNameRef} />
-        <Link className="btn btn-secondary" to="/list-vocabularies">
+        <Link className="btn btn-secondary" to="/vocabularies">
           Cancel
         </Link>
         <button className="btn btn-primary">Save</button>

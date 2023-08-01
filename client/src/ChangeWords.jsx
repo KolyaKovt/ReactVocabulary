@@ -23,7 +23,7 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
   async function changeWord(e) {
     e.preventDefault();
 
-    await fetch(`${serverBase}/change-word`, {
+    await fetch(`${serverBase}/vocabulary/words/change`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
     })
       .catch(err => console.error(err));
     
-    navigate('/open-vocabulary');
+    navigate('/vocabulary');
   }
 
   return (
@@ -40,7 +40,7 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
       <h1>Changing words in: {vocabulary.name}</h1>
       <form onSubmit={changeWord}>
         <FormWord wordRef={wordRef} translRef={translRef} />
-        <Link className="btn btn-secondary" to="/open-vocabulary">
+        <Link className="btn btn-secondary" to="/vocabulary">
           Cancel
         </Link>
         <button className="btn btn-primary">Save</button>

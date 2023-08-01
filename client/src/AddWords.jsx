@@ -20,7 +20,7 @@ export default function AddWords({ getVocabulary, serverBase }) {
   function addWord(e) {
     e.preventDefault();
 
-    fetch(`${serverBase}/add-word`, {
+    fetch(`${serverBase}/vocabulary/words/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export default function AddWords({ getVocabulary, serverBase }) {
       <h1>Adding words in: {vocabulary.name}</h1>
       <form onSubmit={addWord}>
         <FormWord wordRef={wordRef} translRef={translRef} />
-        <Link className="btn btn-secondary" to="/open-vocabulary">
+        <Link className="btn btn-secondary" to="/vocabulary">
           Cancel
         </Link>
         <button className="btn btn-primary">Save</button>

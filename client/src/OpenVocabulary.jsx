@@ -20,7 +20,7 @@ export default function OpenVocabulary({
   }, [refresh]);
 
   function deleteWord(index) {
-    fetch(`${serverBase}/delete-word`, {
+    fetch(`${serverBase}/vocabulary/words/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -34,16 +34,16 @@ export default function OpenVocabulary({
   return (
     <main>
       <h1>{vocabulary.name}</h1>
-      <Link className="btn btn-secondary" to="/list-vocabularies">
+      <Link className="btn btn-secondary" to="/vocabularies">
         Cancel
       </Link>
-      <Link className="btn btn-success" to="/add-word">
+      <Link className="btn btn-success" to="/vocabulary/words/add">
         Add words
       </Link>
-      <Link className="btn btn-primary" to="/play-connecting-words">
+      <Link className="btn btn-primary" to="/vocabulary/play/connecting-words">
         Play connecting words
       </Link>
-      <Link className="btn btn-dark" to="/list-vocabularies">
+      <Link className="btn btn-dark" to="/vocabularies">
         Play guessing word
       </Link>
       {vocabulary.firstLang.map((word, index) => {
@@ -56,7 +56,7 @@ export default function OpenVocabulary({
             </div>
             <div className="links">
               <Link
-                to="/change-word"
+                to="/vocabulary/words/change"
                 className="btn btn-primary"
                 onClick={() => setIndex(index)}
               >

@@ -33,7 +33,7 @@ export default function App() {
   }, [index]);
 
   function getVocabulary(setVocabulary) {
-    fetch(`${serverBase}/get-vocabulary/${openedVocId}`)
+    fetch(`${serverBase}/vocabulary/${openedVocId}`)
       .then(res => res.json())
       .then(voc => setVocabulary(voc))
       .catch(e => console.error(e));
@@ -42,7 +42,7 @@ export default function App() {
   return (
     <Routes>
       <Route
-        path="/list-vocabularies"
+        path="/vocabularies"
         element={
           <ListVocabularies
             serverBase={serverBase}
@@ -51,11 +51,11 @@ export default function App() {
         }
       />
       <Route
-        path="/new-vocabulary"
+        path="/vocabulary/new"
         element={<NewVocabulary serverBase={serverBase} />}
       />
       <Route
-        path="/open-vocabulary"
+        path="/vocabulary"
         element={
           <OpenVocabulary
             serverBase={serverBase}
@@ -65,7 +65,7 @@ export default function App() {
         }
       />
       <Route
-        path="/rename-vocabulary"
+        path="/vocabulary/rename"
         element={
           <RenameVocabulary
             serverBase={serverBase}
@@ -74,13 +74,13 @@ export default function App() {
         }
       />
       <Route
-        path="/add-word"
+        path="/vocabulary/words/add"
         element={
           <AddWords serverBase={serverBase} getVocabulary={getVocabulary} />
         }
       />
       <Route
-        path="/change-word"
+        path="/vocabulary/words/change"
         element={
           <ChangeWords
             serverBase={serverBase}
@@ -90,7 +90,7 @@ export default function App() {
         }
       />
       <Route
-        path="/play-connecting-words"
+        path="/vocabulary/play/connecting-words"
         element={<ConnectingWords serverBase={serverBase} getVocabulary={getVocabulary} />}
       />
     </Routes>

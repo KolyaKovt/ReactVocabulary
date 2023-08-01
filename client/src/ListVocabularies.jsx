@@ -10,14 +10,14 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
   }, []);
 
   function getVocabularies() {
-    fetch(`${serverBase}/get-vocabularies`)
+    fetch(`${serverBase}/vocabularies`)
       .then((res) => res.json())
       .then((vocabularies) => setVocabularies(vocabularies))
       .catch((e) => console.error(e));
   }
 
   function deleteVocabulary(id) {
-    fetch(`${serverBase}/delete-vocabulary`, {
+    fetch(`${serverBase}/vocabulary/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
   return (
     <main>
       <h1>Vocabularies</h1>
-      <Link className="btn btn-success" to="/new-vocabulary">
+      <Link className="btn btn-success" to="/vocabulary/new">
         New vocabulary
       </Link>
       <div className="vocabularies">
@@ -47,13 +47,13 @@ export default function ListVocabularies({ serverBase, setOpenedVocId }) {
               <Link
                 className="btn btn-secondary"
                 onClick={() => setOpenedVocId(vocabulary.id)}
-                to="/open-vocabulary"
+                to="/vocabulary"
               >
                 Open
               </Link>
               <Link
                 className="btn btn-primary"
-                to="/rename-vocabulary"
+                to="/vocabulary/rename"
                 onClick={() => setOpenedVocId(vocabulary.id)}
               >
                 Rename

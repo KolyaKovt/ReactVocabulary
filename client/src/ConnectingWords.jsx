@@ -110,7 +110,7 @@ export default function ConnectingWords({ getVocabulary }) {
     <>
       <main>
         <h1>Left words: {vocabulary.firstLang.length - countOfGuessedWords}</h1>
-        <Link className="btn btn-secondary" to="/open-vocabulary">
+        <Link className="btn btn-secondary" to="/vocabulary">
           Cancel
         </Link>
         <a className="btn btn-success" onClick={restart}>

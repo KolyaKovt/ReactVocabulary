@@ -26,7 +26,7 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
 
     if (vocNameRef.current.value.trim() === "") return;
 
-    await fetch(`${serverBase}/rename-vocabulary`, {
+    await fetch(`${serverBase}/vocabulary/rename`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
       <h1>Rename vocabulary</h1>
       <form onSubmit={renameVocabulary}>
         <FormVocabulary vocNameRef={vocNameRef} />
-        <Link className="btn btn-secondary" to="/list-vocabularies">
+        <Link className="btn btn-secondary" to="/vocabularies">
           Cancel
         </Link>
         <button className="btn btn-primary">Save</button>
