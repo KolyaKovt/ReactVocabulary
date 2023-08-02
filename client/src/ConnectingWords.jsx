@@ -86,7 +86,7 @@ export default function ConnectingWords({ getVocabulary }) {
     let minimal = Math.min(countOfStrins, indecies.length);
 
     for (let i = 0; i < minimal; i++) {
-      let rndIndex = getRandomNumber(0, indecies.length - 1);
+      const rndIndex = getRandomNumber(0, indecies.length - 1);
 
       fl.push(indecies[rndIndex]);
       sl.push(indecies[rndIndex]);
@@ -115,8 +115,8 @@ export default function ConnectingWords({ getVocabulary }) {
   }
 
   return (
-    <>
-      <main>
+    <main>
+      <div className="h1-plus-buttons">
         <h1>Left words: {vocabulary.firstLang.length - countOfGuessedWords}</h1>
         <Link className="btn btn-secondary" to="/vocabulary">
           Cancel
@@ -124,52 +124,52 @@ export default function ConnectingWords({ getVocabulary }) {
         <a className="btn btn-success" onClick={restart}>
           Restart
         </a>
+      </div>
+      <div className="games-container">
         {currIndFL.map((wIndex, i) => {
           return (
-            <div className="container-for-word-pairs" key={i}>
-              <div className="word-pairs">
-                <div
-                  className={
-                    "word " +
-                    (wrongAnswer && selectedFL === i
-                      ? "wrong"
-                      : guessedIndFL.includes(i)
-                      ? "guessed"
-                      : selectedFL === i
-                      ? "selected"
-                      : "")
-                  }
-                  onClick={() => {
-                    if (wrongAnswer) return;
-                    selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i);
-                  }}
-                >
-                  {vocabulary.firstLang[wIndex]}
-                </div>
-                <div
-                  className={
-                    "word " +
-                    (wrongAnswer && selectedSL === i
-                      ? "wrong"
-                      : guessedIndSL.includes(i)
-                      ? "guessed"
-                      : selectedSL === i
-                      ? "selected"
-                      : "")
-                  }
-                  onClick={() => {
-                    if (wrongAnswer) return;
-                    selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i);
-                  }}
-                >
-                  {vocabulary.secLang[currIndSL[i]]}
-                </div>
+            <div className="word-pairs game" key={i}>
+              <div
+                className={
+                  "word " +
+                  (wrongAnswer && selectedFL === i
+                    ? "wrong"
+                    : guessedIndFL.includes(i)
+                    ? "guessed"
+                    : selectedFL === i
+                    ? "selected"
+                    : "")
+                }
+                onClick={() => {
+                  if (wrongAnswer) return;
+                  selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i);
+                }}
+              >
+                {vocabulary.firstLang[wIndex]}
+              </div>
+              <div
+                className={
+                  "word " +
+                  (wrongAnswer && selectedSL === i
+                    ? "wrong"
+                    : guessedIndSL.includes(i)
+                    ? "guessed"
+                    : selectedSL === i
+                    ? "selected"
+                    : "")
+                }
+                onClick={() => {
+                  if (wrongAnswer) return;
+                  selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i);
+                }}
+              >
+                {vocabulary.secLang[currIndSL[i]]}
               </div>
             </div>
           );
         })}
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
 

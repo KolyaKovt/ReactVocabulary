@@ -44,7 +44,7 @@ export default function OpenVocabulary({
       <Link className="btn btn-primary" to="/vocabulary/play/connecting-words">
         Play connecting words
       </Link>
-      <Link className="btn btn-dark" to="/vocabularies">
+      <Link className="btn btn-dark" to="/vocabulary/play/guessing-words">
         Play guessing word
       </Link>
       {vocabulary.firstLang.map((word, index) => {

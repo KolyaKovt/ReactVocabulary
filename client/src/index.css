@@ -93,13 +93,39 @@ div.links {
 /*********************************************/
 /********Playing connecting words*************/
 /*********************************************/
-div.word.selected {
+div.h1-plus-buttons {
+  width: 600px;
+  margin: 0 auto;
+}
+div.games-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+div.word-pairs.game {
+  margin-top: 10px;
+}
+div.selected {
   background-color: rgb(43, 177, 226);
 }
-div.word.guessed {
+div.guessed {
   visibility: hidden;
 }
-div.word.wrong {
+div.wrong {
   background-color: rgb(226, 43, 43);
+}
+/*********************************************/
+
+/*********************************************/
+/********Playing connecting words*************/
+/*********************************************/
+div.word-to-guess {
+  width: fit-content;
+  margin: 10px auto;
+  font-size: 30px;
+}
+div.words-variants {
+  margin-top: 10px;
 }
 /*********************************************/

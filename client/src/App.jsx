@@ -10,6 +10,7 @@ import RenameVocabulary from "./RenameVocabulary";
 import AddWords from "./AddWords";
 import ChangeWords from "./ChangeWords";
 import ConnectingWords from "./ConnectingWords";
+import GuessingWords from "./GuessingWords";
 
 const serverBase = "http://localhost:3000";
 
@@ -91,7 +92,11 @@ export default function App() {
       />
       <Route
         path="/vocabulary/play/connecting-words"
-        element={<ConnectingWords serverBase={serverBase} getVocabulary={getVocabulary} />}
+        element={<ConnectingWords getVocabulary={getVocabulary} />}
+      />
+      <Route
+        path="/vocabulary/play/guessing-words"
+        element={<GuessingWords getVocabulary={getVocabulary} />}
       />
     </Routes>
   );
