@@ -37,7 +37,7 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
       }),
     }).catch(e => console.error(e));
 
-    navigate("/list-vocabularies");
+    navigate("/vocabularies");
   }
 
   return (
