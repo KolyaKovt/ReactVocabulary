@@ -70,7 +70,7 @@ div.container-for-word-pairs {
 }
 div.word {
   background-color: rgba(255, 255, 255, 0.774);
-  width: 45%;
+  width: 49%;
   border: 2px solid gray;
   border-radius: 5px;
   font-size: 20px;
@@ -78,7 +78,7 @@ div.word {
 }
 div.word-pairs {
   display: inline-flex;
-  width: calc(100% - 200px);
+  width: calc(100% - 180px);
   justify-content: space-between;
 }
 div.links {
