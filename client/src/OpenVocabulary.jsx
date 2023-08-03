@@ -34,7 +34,7 @@ export default function OpenVocabulary({
 
   return (
     <main>
-      <h1>{vocabulary.name}</h1>
+      <h1>{vocabulary.name} ({vocabulary.firstLang.length} words)</h1>
       <Link className="btn btn-secondary" to="/vocabularies">
         Cancel
       </Link>
@@ -50,7 +50,6 @@ export default function OpenVocabulary({
       {vocabulary.firstLang.map((word, index) => {
         return (
           <div className="container-for-word-pairs" key={index}>
-            <p className="number">{index + 1})</p>
             <div className="word-pairs">
               <div className="word">{word}</div>
               <div className="word">{vocabulary.secLang[index]}</div>

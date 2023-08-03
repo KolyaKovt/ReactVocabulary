@@ -7,7 +7,7 @@ const countOfStrins = 7;
 let indecies = [];
 let countOfGuessedWords = 0;
 
-export default function ConnectingWords({ getVocabulary }) {
+export default function ConnectingWords({ getVocabulary, incrementCountOfRep }) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
@@ -48,6 +48,8 @@ export default function ConnectingWords({ getVocabulary }) {
         clearSelected();
       }, 500);
     }
+
+    if (indecies.length === 0) incrementCountOfRep();
   }, [selectedFL, selectedSL]);
 
   useEffect(() => {
@@ -175,4 +177,5 @@ export default function ConnectingWords({ getVocabulary }) {
 
 ConnectingWords.propTypes = {
   getVocabulary: PropTypes.func,
+  incrementCountOfRep: PropTypes.func,
 };

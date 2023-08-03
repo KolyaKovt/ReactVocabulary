@@ -40,6 +40,18 @@ export default function App() {
       .catch(e => console.error(e));
   }
 
+  function incrementCountOfRep() {
+    fetch(`${serverBase}/vocabulary/incrementCountOfRepetitions`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: openedVocId
+      }),
+    }).catch(e => console.error(e));
+  }
+
   return (
     <Routes>
       <Route
@@ -92,11 +104,11 @@ export default function App() {
       />
       <Route
         path="/vocabulary/play/connecting-words"
-        element={<ConnectingWords getVocabulary={getVocabulary} />}
+        element={<ConnectingWords getVocabulary={getVocabulary} incrementCountOfRep={incrementCountOfRep} />}
       />
       <Route
         path="/vocabulary/play/guessing-words"
-        element={<GuessingWords getVocabulary={getVocabulary} />}
+        element={<GuessingWords getVocabulary={getVocabulary} incrementCountOfRep={incrementCountOfRep} />}
       />
     </Routes>
   );

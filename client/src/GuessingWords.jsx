@@ -7,7 +7,7 @@ const countOfStrins = 6;
 let indecies = [];
 let countOfGuessedWords = 0;
 
-export default function GuessingWords({ getVocabulary }) {
+export default function GuessingWords({ getVocabulary, incrementCountOfRep }) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
@@ -82,6 +82,7 @@ export default function GuessingWords({ getVocabulary }) {
       countOfGuessedWords++;
       setButtonsInds([]);
       setCorrectInd(-1);
+      incrementCountOfRep();
       return;
     }
 
@@ -127,4 +128,5 @@ export default function GuessingWords({ getVocabulary }) {
 
 GuessingWords.propTypes = {
   getVocabulary: PropTypes.func,
+  incrementCountOfRep: PropTypes.func,
 };
