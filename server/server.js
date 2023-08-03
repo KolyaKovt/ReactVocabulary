@@ -163,6 +163,18 @@ app.put("/vocabulary/words/change", async (req, res) => {
   });
 });
 
+app.put("/vocabulary/incrementCountOfRepetitions", async (req, res) => {
+  const query = `UPDATE vocabularies
+  SET countOfRepetitions = countOfRepetitions + 1
+  WHERE id = ${req.body.id};`;
+
+  db.query(query, (err) => {
+    if (err) handleError(res, err);
+    
+    return res.sendStatus(200);
+  });
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log("It's alive on http://localhost:" + PORT);
