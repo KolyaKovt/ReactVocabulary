@@ -4,7 +4,11 @@ import FormVocabulary from "./_form_vocabulary";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
-export default function RenameVocabulary({ serverBase, getVocabulary }) {
+export default function RenameVocabulary({
+  serverBase,
+  getVocabulary,
+  escapeHandler,
+}) {
   const [vocabulary, setVocabulary] = useState({
     name: "",
     firstLang: [],
@@ -44,7 +48,7 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
   return (
     <main>
       <h1>Rename vocabulary</h1>
-      <FormVocabulary vocNameRef={vocNameRef} submit={renameVocabulary} />
+      <FormVocabulary vocNameRef={vocNameRef} submit={renameVocabulary} escapeHandler={escapeHandler} />
     </main>
   );
 }
@@ -52,4 +56,5 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
 RenameVocabulary.propTypes = {
   serverBase: PropTypes.string,
   getVocabulary: PropTypes.func,
+  escapeHandler: PropTypes.func,
 };

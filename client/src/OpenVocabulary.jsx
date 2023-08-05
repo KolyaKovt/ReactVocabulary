@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function OpenVocabulary({
   getVocabulary,
   serverBase,
   setIndex,
+  escapeHandler,
 }) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
@@ -14,11 +15,23 @@ export default function OpenVocabulary({
     name: "",
   });
 
+  const escapeRef = useRef(null);
+
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     getVocabulary(setVocabulary);
   }, [refresh]);
+  
+  useEffect(() => {
+    const handler = (e) => escapeHandler(e, escapeRef);
+
+    document.addEventListener("keydown", handler);
+
+    return () => {
+      document.removeEventListener("keydown", handler);
+    };
+  }, []);
 
   function deleteWord(index) {
     fetch(`${serverBase}/vocabulary/words/delete`, {
@@ -35,7 +48,7 @@ export default function OpenVocabulary({
   return (
     <main>
       <h1>{vocabulary.name} (count: {vocabulary.firstLang.length})</h1>
-      <Link className="btn btn-secondary" to="/vocabularies">
+      <Link className="btn btn-secondary" to="/vocabularies" ref={escapeRef}>
         Cancel
       </Link>
       <Link className="btn btn-success" to="/vocabulary/words/add">
@@ -77,4 +90,5 @@ OpenVocabulary.propTypes = {
   getVocabulary: PropTypes.func,
   serverBase: PropTypes.string,
   setIndex: PropTypes.func,
+  escapeHandler: PropTypes.func,
 };

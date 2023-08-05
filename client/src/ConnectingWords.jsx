@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const countOfStrins = 7;
 let indecies = [];
 let countOfGuessedWords = 0;
 
-export default function ConnectingWords({ getVocabulary, incrementCountOfRep }) {
+export default function ConnectingWords({ getVocabulary, incrementCountOfRep, escapeHandler }) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
     name: "",
   });
+
+  const escapeRef = useRef(null);
 
   const [currIndFL, setCurrIndFL] = useState([]);
   const [currIndSL, setCurrIndSL] = useState([]);
@@ -27,6 +29,14 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep }) 
 
   useEffect(() => {
     getVocabulary(setVocabulary);
+
+    const handler = (e) => escapeHandler(e, escapeRef);
+
+    document.addEventListener("keydown", handler);
+
+    return () => {
+      document.removeEventListener("keydown", handler);
+    };
   }, []);
 
   useEffect(() => {
@@ -120,7 +130,7 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep }) 
     <main>
       <div className="h1-plus-buttons">
         <h1>Left words: {vocabulary.firstLang.length - countOfGuessedWords}</h1>
-        <Link className="btn btn-secondary" to="/vocabulary">
+        <Link className="btn btn-secondary" to="/vocabulary" ref={escapeRef}>
           Cancel
         </Link>
         <a className="btn btn-success" onClick={restart}>
@@ -178,4 +188,5 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep }) 
 ConnectingWords.propTypes = {
   getVocabulary: PropTypes.func,
   incrementCountOfRep: PropTypes.func,
+  escapeHandler: PropTypes.func,
 };

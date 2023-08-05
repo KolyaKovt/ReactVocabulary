@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormWord from "./_form_word";
 
-export default function ChangeWords({ getVocabulary, serverBase, index }) {
+export default function ChangeWords({ getVocabulary, serverBase, index, escapeHandler }) {
   const [vocabulary, setVocabulary] = useState({
     name: "",
     firstLang: [],
@@ -48,13 +48,14 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
   return (
     <main>
       <h1>Changing words in: {vocabulary.name}</h1>
-      <FormWord wordRef={wordRef} translRef={translRef} submit={changeWord} />
+      <FormWord wordRef={wordRef} translRef={translRef} submit={changeWord} escapeHandler={escapeHandler} />
     </main>
   );
 }
 
 ChangeWords.propTypes = {
   getVocabulary: PropTypes.func,
+  escapeHandler: PropTypes.func,
   serverBase: PropTypes.string,
   index: PropTypes.number,
 };

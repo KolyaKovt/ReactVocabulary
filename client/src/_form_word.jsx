@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-export default function FormWord({ wordRef, translRef, submit }) {
+export default function FormWord({ wordRef, translRef, submit, escapeHandler }) {
+  const escapeRef = useRef(null);
+
   function handleKeyDown(e) {
     if (e.key === "Tab") {
       e.preventDefault();
@@ -16,10 +18,14 @@ export default function FormWord({ wordRef, translRef, submit }) {
   }
 
   useEffect(() => {
+    const handler = (e) => escapeHandler(e, escapeRef);
+
     document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handler);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handler);
     };
   }, []);
 
@@ -47,7 +53,7 @@ export default function FormWord({ wordRef, translRef, submit }) {
           />
         </div>
       </div>
-      <Link className="btn btn-secondary" to="/vocabulary">
+      <Link className="btn btn-secondary" to="/vocabulary" ref={escapeRef}>
         Cancel
       </Link>
       <button className="btn btn-primary">Save</button>
@@ -59,4 +65,5 @@ FormWord.propTypes = {
   wordRef: PropTypes.object,
   translRef: PropTypes.object,
   submit: PropTypes.func,
+  escapeHandler: PropTypes.func,
 };

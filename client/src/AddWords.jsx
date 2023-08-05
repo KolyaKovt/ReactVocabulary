@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
-// import { Link } from "react-router-dom";
 import FormWord from "./_form_word";
 
-export default function AddWords({ getVocabulary, serverBase }) {
+export default function AddWords({ getVocabulary, serverBase, escapeHandler }) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
@@ -42,12 +41,13 @@ export default function AddWords({ getVocabulary, serverBase }) {
   return (
     <main>
       <h1>Adding words in: {vocabulary.name}</h1>
-      <FormWord wordRef={wordRef} translRef={translRef} submit={addWord} />
+      <FormWord wordRef={wordRef} translRef={translRef} submit={addWord} escapeHandler={escapeHandler} />
     </main>
   );
 }
 
 AddWords.propTypes = {
   getVocabulary: PropTypes.func,
+  escapeHandler: PropTypes.func,
   serverBase: PropTypes.string,
 };

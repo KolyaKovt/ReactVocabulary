@@ -47,9 +47,13 @@ export default function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: openedVocId
+        id: openedVocId,
       }),
     }).catch(e => console.error(e));
+  }
+
+  function escapeHandler(e, escapeRef) {
+    if (e.key === "Escape" || e.key === "Esc") escapeRef.current.click();
   }
 
   return (
@@ -65,7 +69,12 @@ export default function App() {
       />
       <Route
         path="/vocabulary/new"
-        element={<NewVocabulary serverBase={serverBase} />}
+        element={
+          <NewVocabulary
+            serverBase={serverBase}
+            escapeHandler={escapeHandler}
+          />
+        }
       />
       <Route
         path="/vocabulary"
@@ -74,6 +83,7 @@ export default function App() {
             serverBase={serverBase}
             getVocabulary={getVocabulary}
             setIndex={setIndex}
+            escapeHandler={escapeHandler}
           />
         }
       />
@@ -83,13 +93,18 @@ export default function App() {
           <RenameVocabulary
             serverBase={serverBase}
             getVocabulary={getVocabulary}
+            escapeHandler={escapeHandler}
           />
         }
       />
       <Route
         path="/vocabulary/words/add"
         element={
-          <AddWords serverBase={serverBase} getVocabulary={getVocabulary} />
+          <AddWords
+            serverBase={serverBase}
+            getVocabulary={getVocabulary}
+            escapeHandler={escapeHandler}
+          />
         }
       />
       <Route
@@ -98,17 +113,30 @@ export default function App() {
           <ChangeWords
             serverBase={serverBase}
             getVocabulary={getVocabulary}
+            escapeHandler={escapeHandler}
             index={index}
           />
         }
       />
       <Route
         path="/vocabulary/play/connecting-words"
-        element={<ConnectingWords getVocabulary={getVocabulary} incrementCountOfRep={incrementCountOfRep} />}
+        element={
+          <ConnectingWords
+            getVocabulary={getVocabulary}
+            incrementCountOfRep={incrementCountOfRep}
+            escapeHandler={escapeHandler}
+          />
+        }
       />
       <Route
         path="/vocabulary/play/guessing-words"
-        element={<GuessingWords getVocabulary={getVocabulary} incrementCountOfRep={incrementCountOfRep} />}
+        element={
+          <GuessingWords
+            getVocabulary={getVocabulary}
+            incrementCountOfRep={incrementCountOfRep}
+            escapeHandler={escapeHandler}
+          />
+        }
       />
     </Routes>
   );
