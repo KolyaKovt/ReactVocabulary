@@ -22,157 +22,154 @@ db.connect(err => {
 });
 
 function handleError(res, err) {
-  res.sendStatus(err.code).json({ error: err.message });
+  res.json(err);
+}
+
+function queryAsync(query) {
+  return new Promise((resolve, reject) => {
+    db.query(query, (err, result) => {
+      if (err) reject(err);
+      resolve(result);
+    });
+  });
 }
 
 async function getVocabularyObj(vocabulary) {
-  const queryWords = `SELECT * FROM words WHERE vocabulary_id = ${vocabulary.id};`;
-
-  vocabulary.firstLang = [];
-  vocabulary.secLang = [];
-  vocabulary.wordsIds = [];
-
   try {
-    const words = await new Promise((resolve, reject) => {
-      db.query(queryWords, (err, words) => {
-        if (err) reject(err);
-        resolve(words);
-      });
-    });
-  
+    const query = `SELECT * FROM words WHERE vocabulary_id = ${vocabulary.id};`;
+    const words = await queryAsync(query);
+
+    vocabulary.firstLang = [];
+    vocabulary.secLang = [];
+    vocabulary.wordsIds = [];
+
     for (let j = 0; j < words.length; j++) {
       const wordObj = words[j];
       vocabulary.firstLang.push(wordObj.word);
       vocabulary.secLang.push(wordObj.translation);
       vocabulary.wordsIds.push(wordObj.id);
     }
-  
-    return vocabulary; 
+
+    return vocabulary;
   } catch (err) {
     throw err;
   }
 }
 
 app.get("/vocabularies", async (req, res) => {
-  const queryVocs = `SELECT * FROM vocabularies;`;
-  
-  db.query(queryVocs, async (err, vocabularies) => {
-    if (err) handleError(res, err);
-    
-    try {
-      for (let i = 0; i < vocabularies.length; i++) {
-        await getVocabularyObj(vocabularies[i]);
-      } 
-    } catch (err) {
-      handleError(res, err);
+  try {
+    const query = `SELECT * FROM vocabularies;`;
+    const vocabularies = await queryAsync(query);
+
+    for (let i = 0; i < vocabularies.length; i++) {
+      await getVocabularyObj(vocabularies[i]);
     }
 
     return res.json(vocabularies);
-  });
+  } catch (error) {
+    handleError(res, err);
+  }
 });
 
 app.get("/vocabulary/:id", async (req, res) => {
-  const query = `SELECT * FROM vocabularies WHERE id = ${req.params.id};`;
+  try {
+    const query = `SELECT * FROM vocabularies WHERE id = ${req.params.id};`;
+    const vocabularies = await queryAsync(query);
 
-  db.query(query, async (err, vocabularies) => {
-    if (err) handleError(res, err);
-
-    if (vocabularies.length === 0) return res.json({ message: "Vocabulary not found" });
+    if (vocabularies.length === 0)
+      return res.json({ message: "Vocabulary not found" });
 
     return res.json(await getVocabularyObj(vocabularies[0]));
-  });
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.post("/vocabulary/create", async (req, res) => {
-  const query = `INSERT INTO vocabularies (name)
-  VALUES ('${req.body.name}');`;
-
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
+  try {
+    const query = `INSERT INTO vocabularies (name) VALUES ('${req.body.name}');`;
+    await queryAsync(query);
 
     return res.sendStatus(200);
-  })
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.put("/vocabulary/rename", async (req, res) => {
   const query = `UPDATE vocabularies
   SET name = '${req.body.name}'
   WHERE id = ${req.body.id};`;
+  await queryAsync(query);
 
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
-    
-    return res.sendStatus(200);
-  });
+  return res.sendStatus(200);
 });
 
 app.delete("/vocabulary/delete", async (req, res) => {
-  const queryWords = `DELETE FROM words
-  WHERE vocabulary_id = ${req.body.id};`;
+  try {
+    const queryWords = `DELETE FROM words
+    WHERE vocabulary_id = ${req.body.id};`;
   
-  const queryVocs = `DELETE FROM vocabularies
-  WHERE id = ${req.body.id};`;
-
+    const queryVocs = `DELETE FROM vocabularies
+    WHERE id = ${req.body.id};`;
   
-  await new Promise(() => {
-    db.query(queryVocs, (err) => {
-      if (err) handleError(res, err);
-    });
-  });
-
-  await new Promise(() => {
-    db.query(queryWords, (err) => {
-      if (err) handleError(res, err);
-    });
-  });
-
-  res.sendStatus(200);
+    await queryAsync(queryWords);
+    await queryAsync(queryVocs);
+  
+    res.sendStatus(200);
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.post("/vocabulary/words/add", async (req, res) => {
-  const query = `INSERT INTO words (word, translation, vocabulary_id)
-  VALUES ('${req.body.word}', '${req.body.transl}', ${req.body.id});`;
-
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
-    
+  try {
+    const query = `INSERT INTO words (word, translation, vocabulary_id)
+    VALUES ('${req.body.word}', '${req.body.transl}', ${req.body.id});`;
+    await queryAsync(query);
+  
     return res.sendStatus(200);
-  });
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.delete("/vocabulary/words/delete", async (req, res) => {
-  const query = `DELETE FROM words
-  WHERE id = ${req.body.id};`;
-
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
+  try {
+    const query = `DELETE FROM words
+    WHERE id = ${req.body.id};`;
+    await queryAsync(query);
     
     return res.sendStatus(200);
-  });
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.put("/vocabulary/words/change", async (req, res) => {
-  const query = `UPDATE words
-  SET word = '${req.body.word}', translation = '${req.body.transl}'
-  WHERE id = ${req.body.id};`;
-
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
-    
+  try {
+    const query = `UPDATE words
+    SET word = '${req.body.word}', translation = '${req.body.transl}'
+    WHERE id = ${req.body.id};`;
+    await queryAsync(query);
+  
     return res.sendStatus(200);
-  });
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 app.put("/vocabulary/incrementCountOfRepetitions", async (req, res) => {
-  const query = `UPDATE vocabularies
-  SET countOfRepetitions = countOfRepetitions + 1
-  WHERE id = ${req.body.id};`;
-
-  db.query(query, (err) => {
-    if (err) handleError(res, err);
-    
+  try {
+    const query = `UPDATE vocabularies
+    SET countOfRepetitions = countOfRepetitions + 1
+    WHERE id = ${req.body.id};`;
+    await queryAsync(query);
+  
     return res.sendStatus(200);
-  });
+  } catch (err) {
+    handleError(err);
+  }
 });
 
 const PORT = 3000;
