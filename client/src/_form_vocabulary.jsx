@@ -6,6 +6,8 @@ export default function FormVocabulary({ vocNameRef, submit, escapeHandler }) {
   const escapeRef = useRef(null);
 
   useEffect(() => {
+    vocNameRef.current.focus();
+
     const handler = (e) => escapeHandler(e, escapeRef);
 
     document.addEventListener("keydown", handler);

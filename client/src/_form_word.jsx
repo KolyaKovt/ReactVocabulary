@@ -18,6 +18,8 @@ export default function FormWord({ wordRef, translRef, submit, escapeHandler }) 
   }
 
   useEffect(() => {
+    wordRef.current.focus();
+
     const handler = (e) => escapeHandler(e, escapeRef);
 
     document.addEventListener("keydown", handleKeyDown);
