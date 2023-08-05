@@ -1,20 +1,26 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-export default function FormVocabulary({ vocNameRef }) {
+export default function FormVocabulary({ vocNameRef, submit }) {
   return (
-    <>
-      <label htmlFor="name">Enter the name of the vocabulary</label>
+    <form onSubmit={submit}>
       <input
         required
         id="name"
         type="text"
         ref={vocNameRef}
         className="form-control"
+        placeholder="Vocabulary name"
       ></input>
-    </>
+      <Link className="btn btn-secondary" to="/vocabularies">
+        Cancel
+      </Link>
+      <button className="btn btn-primary">Save</button>
+    </form>
   );
 }
 
 FormVocabulary.propTypes = {
-  vocNameRef: PropTypes.object
+  vocNameRef: PropTypes.object,
+  submit: PropTypes.func,
 };

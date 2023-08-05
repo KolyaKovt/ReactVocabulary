@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import FormVocabulary from "./_form_vocabulary";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 export default function RenameVocabulary({ serverBase, getVocabulary }) {
@@ -44,13 +44,7 @@ export default function RenameVocabulary({ serverBase, getVocabulary }) {
   return (
     <main>
       <h1>Rename vocabulary</h1>
-      <form onSubmit={renameVocabulary}>
-        <FormVocabulary vocNameRef={vocNameRef} />
-        <Link className="btn btn-secondary" to="/vocabularies">
-          Cancel
-        </Link>
-        <button className="btn btn-primary">Save</button>
-      </form>
+      <FormVocabulary vocNameRef={vocNameRef} submit={renameVocabulary} />
     </main>
   );
 }

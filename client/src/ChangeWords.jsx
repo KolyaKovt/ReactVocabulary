@@ -1,14 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FormWord from "./_form_word";
 
 export default function ChangeWords({ getVocabulary, serverBase, index }) {
-  const [vocabulary, setVocabulary] = useState({ name: "", firstLang: [], secLang: [] });
+  const [vocabulary, setVocabulary] = useState({
+    name: "",
+    firstLang: [],
+    secLang: [],
+  });
 
-  const wordRef = useRef();
-  const translRef = useRef();
+  const wordRef = useRef(null);
+  const translRef = useRef(null);
 
   useEffect(() => {
     wordRef.current.value = vocabulary.firstLang[index];
@@ -24,28 +28,27 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
   async function changeWord(e) {
     e.preventDefault();
 
+    wordRef.current.focus();
+
     await fetch(`${serverBase}/vocabulary/words/change`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: vocabulary.wordsIds[index], word: wordRef.current.value, transl: translRef.current.value }),
-    })
-      .catch(err => console.error(err));
-    
-    navigate('/vocabulary');
+      body: JSON.stringify({
+        id: vocabulary.wordsIds[index],
+        word: wordRef.current.value,
+        transl: translRef.current.value,
+      }),
+    }).catch(err => console.error(err));
+
+    navigate("/vocabulary");
   }
 
   return (
     <main>
       <h1>Changing words in: {vocabulary.name}</h1>
-      <form onSubmit={changeWord}>
-        <FormWord wordRef={wordRef} translRef={translRef} />
-        <Link className="btn btn-secondary" to="/vocabulary">
-          Cancel
-        </Link>
-        <button className="btn btn-primary">Save</button>
-      </form>
+      <FormWord wordRef={wordRef} translRef={translRef} submit={changeWord} />
     </main>
   );
 }
@@ -53,5 +56,5 @@ export default function ChangeWords({ getVocabulary, serverBase, index }) {
 ChangeWords.propTypes = {
   getVocabulary: PropTypes.func,
   serverBase: PropTypes.string,
-  index: PropTypes.number
+  index: PropTypes.number,
 };

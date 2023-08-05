@@ -34,7 +34,7 @@ export default function OpenVocabulary({
 
   return (
     <main>
-      <h1>{vocabulary.name} ({vocabulary.firstLang.length} words)</h1>
+      <h1>{vocabulary.name} (count: {vocabulary.firstLang.length})</h1>
       <Link className="btn btn-secondary" to="/vocabularies">
         Cancel
       </Link>

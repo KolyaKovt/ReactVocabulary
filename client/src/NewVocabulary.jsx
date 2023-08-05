@@ -1,6 +1,5 @@
 import FormVocabulary from "./_form_vocabulary";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 import { useRef } from "react";
 
 export default function NewVocabulary({ serverBase }) {
@@ -23,13 +22,7 @@ export default function NewVocabulary({ serverBase }) {
   return (
     <main>
       <h1>New vocabulary</h1>
-      <form onSubmit={createVocabulary}>
-        <FormVocabulary vocNameRef={vocNameRef} />
-        <Link className="btn btn-secondary" to="/vocabularies">
-          Cancel
-        </Link>
-        <button className="btn btn-primary">Save</button>
-      </form>
+      <FormVocabulary vocNameRef={vocNameRef} submit={createVocabulary} />
     </main>
   );
 }
