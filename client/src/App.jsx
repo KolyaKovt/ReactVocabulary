@@ -17,7 +17,7 @@ const serverBase = "http://localhost:3000";
 export default function App() {
   const [openedVocId, setOpenedVocId] = useState(() => {
     const storedOpenedVocId = localStorage.getItem("openedVocId");
-    if (storedOpenedVocId) return storedOpenedVocId;
+    if (storedOpenedVocId) return parseInt(storedOpenedVocId);
   });
 
   const [index, setIndex] = useState(() => {
@@ -26,11 +26,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("openedVocId", openedVocId);
+    localStorage.setItem("openedVocId", openedVocId.toString());
   }, [openedVocId]);
 
   useEffect(() => {
-    localStorage.setItem("index", index);
+    localStorage.setItem("index", index.toString());
   }, [index]);
 
   function getVocabulary(setVocabulary) {

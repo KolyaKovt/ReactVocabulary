@@ -100,7 +100,6 @@ export default function GuessingWords({ getVocabulary, incrementCountOfRep, esca
       setButtonsInds([]);
       setCorrectInd(-1);
       incrementCountOfRep();
-      return;
     }
   }
 
