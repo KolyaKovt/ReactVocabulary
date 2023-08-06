@@ -88,20 +88,19 @@ export default function GuessingWords({ getVocabulary, incrementCountOfRep, esca
   }
 
   function checkTheAnswer(i) {
-    if (indecies.length === 0) {
-      countOfGuessedWords++;
-      setButtonsInds([]);
-      setCorrectInd(-1);
-      incrementCountOfRep();
-      return;
-    }
-
     if (buttonsInds[i] === correctInd) {
       countOfGuessedWords++;
       setWrongInds([]);
       fillButtonsInds();
     } else {
       if (!wrongInds.includes(i)) setWrongInds(current => [...current, i]);
+    }
+
+    if (vocabulary.firstLang.length - countOfGuessedWords === 0) {
+      setButtonsInds([]);
+      setCorrectInd(-1);
+      incrementCountOfRep();
+      return;
     }
   }
 

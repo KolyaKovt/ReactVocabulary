@@ -59,7 +59,7 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep, es
       }, 500);
     }
 
-    if (indecies.length === 0) incrementCountOfRep();
+    if (vocabulary.firstLang.length - countOfGuessedWords === 0) incrementCountOfRep();
   }, [selectedFL, selectedSL]);
 
   useEffect(() => {
