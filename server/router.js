@@ -1,7 +1,31 @@
-const db = require("./db.js");
 const { Router } = require("express");
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
 const router = Router();
+
+const dbPath = path.join(__dirname, 'database.sqlite');
+const db = new sqlite3.Database(dbPath);
+
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS vocabularies (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      countOfRepetitions INTEGER DEFAULT 0
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS words (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      word TEXT,
+      translation TEXT,
+      vocabulary_id INTEGER
+    )
+  `);
+});
+
 
 function handleError(res, err) {
   res.json(err);
@@ -9,9 +33,9 @@ function handleError(res, err) {
 
 function queryAsync(query) {
   return new Promise((resolve, reject) => {
-    db.query(query, (err, result) => {
+    db.all(query, (err, rows) => {
       if (err) reject(err);
-      resolve(result);
+      resolve(rows);
     });
   });
 }
