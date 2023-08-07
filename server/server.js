@@ -1,7 +1,7 @@
 //importing modules
-import express from "express";
-import cors from "cors";
-import router from "./router.js";
+const express = require("express");
+const cors = require("cors");
+const router = require("./router");
 
 const app = express();
 
@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 //using routes
-app.use('/', router);
+app.use("/", router);
 
 const PORT = 3000;
 app.listen(PORT, () => {

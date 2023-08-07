@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import db from "./db.js";
+const db = require("./db.js");
+const { Router } = require("express");
 
 const router = Router();
 
@@ -91,13 +91,13 @@ router.delete("/vocabulary/delete", async (req, res) => {
   try {
     const queryWords = `DELETE FROM words
     WHERE vocabulary_id = ${req.body.id};`;
-  
+
     const queryVocs = `DELETE FROM vocabularies
     WHERE id = ${req.body.id};`;
-  
+
     await queryAsync(queryWords);
     await queryAsync(queryVocs);
-  
+
     res.sendStatus(200);
   } catch (err) {
     handleError(err);
@@ -109,7 +109,7 @@ router.post("/vocabulary/words/add", async (req, res) => {
     const query = `INSERT INTO words (word, translation, vocabulary_id)
     VALUES ('${req.body.word}', '${req.body.transl}', ${req.body.id});`;
     await queryAsync(query);
-  
+
     return res.sendStatus(200);
   } catch (err) {
     handleError(err);
@@ -121,7 +121,7 @@ router.delete("/vocabulary/words/delete", async (req, res) => {
     const query = `DELETE FROM words
     WHERE id = ${req.body.id};`;
     await queryAsync(query);
-    
+
     return res.sendStatus(200);
   } catch (err) {
     handleError(err);
@@ -134,7 +134,7 @@ router.put("/vocabulary/words/change", async (req, res) => {
     SET word = '${req.body.word}', translation = '${req.body.transl}'
     WHERE id = ${req.body.id};`;
     await queryAsync(query);
-  
+
     return res.sendStatus(200);
   } catch (err) {
     handleError(err);
@@ -147,11 +147,11 @@ router.put("/vocabulary/incrementCountOfRepetitions", async (req, res) => {
     SET countOfRepetitions = countOfRepetitions + 1
     WHERE id = ${req.body.id};`;
     await queryAsync(query);
-  
+
     return res.sendStatus(200);
   } catch (err) {
     handleError(err);
   }
 });
 
-export default router;
+module.exports = router;
