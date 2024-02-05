@@ -80,7 +80,7 @@ router.post("/create", async (req, res) => {
   const query = "INSERT INTO vocabularies (name) VALUES (?);"
   await queryAsync(query, [req.body.name])
 
-  return res.sendStatus(200)
+  return res.sendStatus(201)
 })
 
 router.patch("/rename", async (req, res) => {
@@ -97,7 +97,7 @@ router.delete("/delete", async (req, res) => {
   await queryAsync(queryWords, [req.body.id])
   await queryAsync(queryVocs, [req.body.id])
 
-  res.sendStatus(200)
+  res.sendStatus(204)
 })
 
 router.post("/words/add", async (req, res) => {
@@ -105,14 +105,14 @@ router.post("/words/add", async (req, res) => {
     "INSERT INTO words (word, translation, vocabulary_id) VALUES (?, ?, ?);"
   await queryAsync(query, [req.body.word, req.body.transl, req.body.id])
 
-  return res.sendStatus(200)
+  return res.sendStatus(201)
 })
 
 router.delete("/words/delete", async (req, res) => {
   const query = "DELETE FROM words WHERE id = ?;"
   await queryAsync(query, [req.body.id])
 
-  return res.sendStatus(200)
+  return res.sendStatus(204)
 })
 
 router.patch("/words/change", async (req, res) => {
