@@ -28,7 +28,7 @@ db.serialize(() => {
 
 
 function handleError(res, err) {
-  res.json(err);
+  res.json(err.message);
 }
 
 function queryAsync(query) {

@@ -1,10 +1,10 @@
 import axios from "axios"
 
 const api = axios.create({
-  baseURL: `http://localhost:${3310}`,
+  baseURL: "https://vocabulary-dsm6.onrender.com",
 })
 
 export const fetchGet = async () => {
-  const res = await api.get("/vocabularies")
+  const res = await api.get("/")
   return res.data
 }
