@@ -1,11 +1,11 @@
 const { Router } = require("express")
-const sqlite3 = require("sqlite3").verbose()
+const { Database } = require("sqlite3").verbose()
 const path = require("path")
 
 const router = Router()
 
 const dbPath = path.join(__dirname, "database.sqlite")
-const db = new sqlite3.Database(dbPath)
+const db = new Database(dbPath)
 
 db.serialize(() => {
   db.run(`
@@ -132,8 +132,7 @@ router.patch("/words", async (req, res) => {
 
 // increment the count of repetitions in a vocabulary
 router.patch("/exercise", async (req, res) => {
-  const query =
-    "UPDATE vocabularies SET exercise = exercise + 1 WHERE id = ?;"
+  const query = "UPDATE vocabularies SET exercise = exercise + 1 WHERE id = ?;"
   await queryAsync(query, [req.body.id])
 
   return res.sendStatus(200)
