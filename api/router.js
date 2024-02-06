@@ -12,7 +12,7 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS vocabularies (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
-      countOfRepetitions INTEGER DEFAULT 0
+      exercise INTEGER DEFAULT 0
     )
   `)
 
@@ -55,6 +55,7 @@ async function getVocabularyObj(vocabulary) {
   return vocabulary
 }
 
+// Get all vocabularies
 router.get("/", async (req, res) => {
   const query = `SELECT * FROM vocabularies;`
   const vocabularies = await queryAsync(query)
@@ -66,6 +67,7 @@ router.get("/", async (req, res) => {
   return res.json(vocabularies)
 })
 
+// Get a vocabulary by id
 router.get("/:id", async (req, res) => {
   const query = "SELECT * FROM vocabularies WHERE id = ?;"
   const vocabularies = await queryAsync(query, [req.params.id])
@@ -76,31 +78,35 @@ router.get("/:id", async (req, res) => {
   return res.json(await getVocabularyObj(vocabularies[0]))
 })
 
-router.post("/create", async (req, res) => {
+// Create a vocabulary
+router.post("/", async (req, res) => {
   const query = "INSERT INTO vocabularies (name) VALUES (?);"
   await queryAsync(query, [req.body.name])
 
   return res.sendStatus(201)
 })
 
-router.patch("/rename", async (req, res) => {
+// Rename a vocabulary
+router.patch("/", async (req, res) => {
   const query = "UPDATE vocabularies SET name = ? WHERE id = ?;"
   await queryAsync(query, [req.body.name, req.body.id])
 
   return res.sendStatus(200)
 })
 
-router.delete("/delete", async (req, res) => {
+// Delete a vocabulary
+router.delete("/:id", async (req, res) => {
   const queryWords = "DELETE FROM words WHERE vocabulary_id = ?;"
   const queryVocs = "DELETE FROM vocabularies WHERE id = ?;"
 
-  await queryAsync(queryWords, [req.body.id])
-  await queryAsync(queryVocs, [req.body.id])
+  await queryAsync(queryWords, [req.params.id])
+  await queryAsync(queryVocs, [req.params.id])
 
   res.sendStatus(204)
 })
 
-router.post("/words/add", async (req, res) => {
+// Add a word to a vocabulary
+router.post("/words", async (req, res) => {
   const query =
     "INSERT INTO words (word, translation, vocabulary_id) VALUES (?, ?, ?);"
   await queryAsync(query, [req.body.word, req.body.transl, req.body.id])
@@ -108,23 +114,26 @@ router.post("/words/add", async (req, res) => {
   return res.sendStatus(201)
 })
 
-router.delete("/words/delete", async (req, res) => {
+// Delete a word from a vocabulary
+router.delete("/words/:id", async (req, res) => {
   const query = "DELETE FROM words WHERE id = ?;"
-  await queryAsync(query, [req.body.id])
+  await queryAsync(query, [req.params.id])
 
   return res.sendStatus(204)
 })
 
-router.patch("/words/change", async (req, res) => {
+// Change a word in a vocabulary
+router.patch("/words", async (req, res) => {
   const query = "UPDATE words SET word = ?, translation = ? WHERE id = ?;"
   await queryAsync(query, [req.body.word, req.body.transl, req.body.id])
 
   return res.sendStatus(200)
 })
 
-router.put("/incrementCountOfRepetitions", async (req, res) => {
+// increment the count of repetitions in a vocabulary
+router.patch("/exercise", async (req, res) => {
   const query =
-    "UPDATE vocabularies SET countOfRepetitions = countOfRepetitions + 1 WHERE id = ?;"
+    "UPDATE vocabularies SET exercise = exercise + 1 WHERE id = ?;"
   await queryAsync(query, [req.body.id])
 
   return res.sendStatus(200)
