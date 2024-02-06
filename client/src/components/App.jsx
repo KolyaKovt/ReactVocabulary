@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import "./App.css"
-import { fetchGet } from "../services/api"
+import { fetchVocabularies } from "../services/api"
 
 function App() {
-  const [vocabularies, setVocabularies] = useState("")
-
   useEffect(() => {
-    fetchGet()
-      .then(res => {
-        setVocabularies(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    fetchVocabularies().then(res => {
+      console.log(res)
+    })
   }, [])
 
-  if (vocabularies)
-    return (
-      <ul>
-        {vocabularies.map(voc => (
-          <li key={voc.id}>{voc.name}</li>
-        ))}
-      </ul>
-    )
-
-  return <h1>asd</h1>
+  return <h1>Hi there</h1>
 }
 
 export default App
