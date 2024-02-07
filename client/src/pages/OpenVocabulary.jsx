@@ -3,12 +3,7 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function OpenVocabulary({
-  getVocabulary,
-  serverBase,
-  setIndex,
-  escapeHandler,
-}) {
+export default function OpenVocabulary() {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
@@ -85,10 +80,3 @@ export default function OpenVocabulary({
     </main>
   );
 }
-
-OpenVocabulary.propTypes = {
-  getVocabulary: PropTypes.func,
-  serverBase: PropTypes.string,
-  setIndex: PropTypes.func,
-  escapeHandler: PropTypes.func,
-};

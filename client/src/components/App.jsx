@@ -14,25 +14,8 @@ function App() {
     <Routes>
       <Route path="/" element={<ListVocabularies />} />
       <Route path="/new" element={<NewVocabulary />} />
-      {/* <Route
-        path="/open"
-        element={
-          <OpenVocabulary
-            getVocabulary={getVocabulary}
-            setIndex={setIndex}
-            escapeHandler={escapeHandler}
-          />
-        }
-      /> */}
-      {/* <Route
-        path="/rename"
-        element={
-          <RenameVocabulary
-            getVocabulary={getVocabulary}
-            escapeHandler={escapeHandler}
-          />
-        }
-      /> */}
+      <Route path="/rename/:id" element={<RenameVocabulary />} />
+      {/* <Route path="/:id" element={<OpenVocabulary />} /> */}
       {/* <Route
         path="/words/add"
         element={

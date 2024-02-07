@@ -41,3 +41,14 @@ export const deleteVocabularyThunk = createAsyncThunk(
     }
   }
 )
+
+export const renameVocabularyThunk = createAsyncThunk(
+  "rename a vocabulary",
+  async (info, thunkAPI) => {
+    try {
+      await api.patch("/", info)
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message)
+    }
+  }
+)

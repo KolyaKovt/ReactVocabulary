@@ -1,60 +1,37 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import PropTypes from "prop-types";
-import VocabularyForm from "../components/VocabularyForm";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux"
+import { useForm } from "react-hook-form"
 
-export default function RenameVocabulary({
-  serverBase,
-  getVocabulary,
-  escapeHandler,
-}) {
-  const [vocabulary, setVocabulary] = useState({
-    name: "",
-    firstLang: [],
-    secLang: [],
-  });
+import VocabularyForm from "../components/VocabularyForm"
+import { renameVocabularyThunk } from "../redux/vocabularies/operations"
+import { useNavigate, useParams } from "react-router-dom"
 
-  const vocNameRef = useRef();
-  const navigate = useNavigate();
+export default function RenameVocabulary() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { register, handleSubmit, reset } = useForm()
+  const { id } = useParams()
 
-  useEffect(() => {
-    vocNameRef.current.value = vocabulary.name;
-  }, [vocabulary]);
-
-  useEffect(() => {
-    getVocabulary(setVocabulary);
-  }, []);
-
-  async function renameVocabulary(e) {
-    e.preventDefault();
-
-    if (vocNameRef.current.value.trim() === "") return;
-
-    await fetch(`${serverBase}/vocabulary/rename`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: vocabulary.id,
-        name: vocNameRef.current.value,
-      }),
-    }).catch(e => console.error(e));
-
-    navigate("/vocabularies");
+  const submit = data => {
+    dispatch(
+      renameVocabularyThunk({
+        name: data.name.trim(),
+        id,
+      })
+    )
+    navigate("/")
+    reset()
   }
 
   return (
     <main>
-      <h1>Rename vocabulary</h1>
-      <VocabularyForm vocNameRef={vocNameRef} submit={renameVocabulary} escapeHandler={escapeHandler} />
+      <section className="flex flex-col items-center">
+        <h1 className="mt-6 mb-6 text-4xl font-bold">Rename the vocabulary</h1>
+        <VocabularyForm
+          submit={handleSubmit(submit)}
+          register={register}
+          btnLabel={"Rename"}
+        />
+      </section>
     </main>
-  );
+  )
 }
-
-RenameVocabulary.propTypes = {
-  serverBase: PropTypes.string,
-  getVocabulary: PropTypes.func,
-  escapeHandler: PropTypes.func,
-};

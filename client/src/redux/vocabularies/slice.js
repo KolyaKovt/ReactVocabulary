@@ -1,19 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { deleteVocabularyThunk, fetchVocabulariesThunk } from "./operations"
+import { createSlice, isAnyOf } from "@reduxjs/toolkit"
+import {
+  deleteVocabularyThunk,
+  fetchVocabulariesThunk,
+  renameVocabularyThunk,
+} from "./operations"
 
 const initialState = {
   vocabularies: [],
-  selectedVocabularyId: -1,
+  isLoading: false,
+  error: null,
 }
 
 const slice = createSlice({
   name: "vocabularies",
   initialState,
-  reducers: {
-    selectVocabulary: (state, { payload }) => {
-      state.selectedVocabularyId = payload
-    },
-  },
   extraReducers: builder => {
     builder
       .addCase(fetchVocabulariesThunk.fulfilled, (state, { payload }) => {
@@ -24,10 +24,42 @@ const slice = createSlice({
           voc => voc.id !== payload
         )
       })
+      .addMatcher(
+        isAnyOf(
+          deleteVocabularyThunk.pending,
+          deleteVocabularyThunk.pending,
+          renameVocabularyThunk.pending
+        ),
+        state => {
+          state.isLoading = true
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          deleteVocabularyThunk.fulfilled,
+          deleteVocabularyThunk.fulfilled,
+          renameVocabularyThunk.fulfilled
+        ),
+        state => {
+          state.isLoading = false
+          state.error = null
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          deleteVocabularyThunk.rejected,
+          deleteVocabularyThunk.rejected,
+          renameVocabularyThunk.rejected
+        ),
+        (state, { payload }) => {
+          state.error = payload
+        }
+      )
   },
   selectors: {
     selectVocabularies: state => state.vocabularies,
-    selectSelectedVocabularyId: state => state.selectedVocabularyId,
+    selectIsLoading: state => state.isLoading,
+    selectError: state => state.error,
   },
 })
 
@@ -35,7 +67,8 @@ export const vocabulariesReducer = slice.reducer
 
 export const {
   selectVocabularies,
-  selectSelectedVocabularyId,
+  selectIsLoading,
+  selectError,
 } = slice.selectors
 
 export const { selectVocabulary } = slice.actions

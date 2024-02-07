@@ -3,11 +3,14 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
+import { Loader } from "../components/Loader"
+
 import {
   deleteVocabularyThunk,
   fetchVocabulariesThunk,
 } from "../redux/vocabularies/operations"
 import {
+  selectIsLoading,
   selectVocabularies,
   selectVocabulary,
 } from "../redux/vocabularies/slice"
@@ -15,6 +18,7 @@ import {
 export default function ListVocabularies() {
   const vocabularies = useSelector(selectVocabularies)
   const dispatch = useDispatch()
+  const isLoading = useSelector(selectIsLoading)
 
   useEffect(() => {
     dispatch(fetchVocabulariesThunk())
@@ -27,26 +31,27 @@ export default function ListVocabularies() {
         <Link className="btn btn-success mb-6" to="/new">
           New vocabulary
         </Link>
+
+        {isLoading && <Loader />}
+
         <ul className="flex flex-col gap-5 max-h-[450px] overflow-y-auto">
           {vocabularies.map(vocabulary => {
             return (
-              <li className="vocabulary" key={vocabulary.id}>
-                <div className="flex gap-2 mb-4">
+              <li key={vocabulary.id}>
+                <div className="flex gap-2 mb-4 font-bold text-2xl">
                   <h2>{vocabulary.name}</h2>
-                  <p className="count-of-rep-sec">({vocabulary.exercise})</p>
+                  <p>({vocabulary.exercise})</p>
                 </div>
                 <div className="flex gap-2">
                   <Link
                     className="btn btn-secondary"
-                    onClick={() => dispatch(selectVocabulary(vocabulary.id))}
-                    to="/open"
+                    to={`/${vocabulary.id}`}
                   >
                     Open
                   </Link>
                   <Link
                     className="btn btn-primary"
-                    to="/rename"
-                    onClick={() => dispatch(selectVocabulary(vocabulary.id))}
+                    to={`/rename/${vocabulary.id}`}
                   >
                     Rename
                   </Link>
