@@ -1,49 +1,29 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Link, useParams } from "react-router-dom"
+import { selectIsLoading, selectVocabulary } from "../redux/vocabularies/slice"
+import { fetchVocabulary } from "../redux/vocabularies/operations"
+import { Loader } from "../components/Loader"
 
 export default function OpenVocabulary() {
-  const [vocabulary, setVocabulary] = useState({
-    firstLang: [],
-    secLang: [],
-    name: "",
-  });
+  const dispatch = useDispatch()
+  const vocabulary = useSelector(selectVocabulary)
+  const isLoading = useSelector(selectIsLoading)
 
-  const escapeRef = useRef(null);
-
-  const [refresh, setRefresh] = useState(false);
+  const { id } = useParams()
 
   useEffect(() => {
-    getVocabulary(setVocabulary);
-  }, [refresh]);
-  
-  useEffect(() => {
-    const handler = (e) => escapeHandler(e, escapeRef);
+    dispatch(fetchVocabulary(id))
+  }, [dispatch, id])
 
-    document.addEventListener("keydown", handler);
-
-    return () => {
-      document.removeEventListener("keydown", handler);
-    };
-  }, []);
-
-  function deleteWord(index) {
-    fetch(`${serverBase}/vocabulary/words/delete`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: vocabulary.wordsIds[index] }),
-    })
-      .then(() => setRefresh(!refresh))
-      .catch(e => console.error(e));
-  }
+  if (isLoading || !vocabulary) return <Loader />
 
   return (
     <main>
-      <h1>{vocabulary.name} (count: {vocabulary.firstLang.length})</h1>
-      <Link className="btn btn-secondary" to="/vocabularies" ref={escapeRef}>
+      <h1>
+        {vocabulary.name} (count: {vocabulary.firstLang.length})
+      </h1>
+      <Link className="btn btn-secondary" to="/">
         Cancel
       </Link>
       <Link className="btn btn-success" to="/vocabulary/words/add">
@@ -63,20 +43,19 @@ export default function OpenVocabulary() {
               <div className="word">{vocabulary.secLang[index]}</div>
             </div>
             <div className="links">
-              <Link
-                to="/vocabulary/words/change"
-                className="btn btn-primary"
-                onClick={() => setIndex(index)}
-              >
+              <Link to="/vocabulary/words/change" className="btn btn-primary">
                 Change
               </Link>
-              <a className="btn btn-danger" onClick={() => deleteWord(index)}>
+              <a
+                className="btn btn-danger"
+                onClick={() => console.log("delete")}
+              >
                 Delete
               </a>
             </div>
           </div>
-        );
+        )
       })}
     </main>
-  );
+  )
 }

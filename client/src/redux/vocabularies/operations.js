@@ -4,7 +4,10 @@ import axios from "axios"
 // http://localhost:3310
 // https://vocabulary-dsm6.onrender.com
 const api = axios.create({
-  baseURL: "http://localhost:3310",
+  baseURL:
+    import.meta.env.NODE_ENV === "production"
+      ? "https://vocabulary-dsm6.onrender.com"
+      : "http://localhost:3310",
 })
 
 export const fetchVocabulariesThunk = createAsyncThunk(
@@ -12,6 +15,18 @@ export const fetchVocabulariesThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await api.get("/")
+      return res.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message)
+    }
+  }
+)
+
+export const fetchVocabulary = createAsyncThunk(
+  "fetch a vocabulary",
+  async (id, thunkAPI) => {
+    try {
+      const res = await api.get(`/${id}`)
       return res.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message)

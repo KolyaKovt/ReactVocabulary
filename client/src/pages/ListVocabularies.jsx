@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
@@ -12,7 +11,6 @@ import {
 import {
   selectIsLoading,
   selectVocabularies,
-  selectVocabulary,
 } from "../redux/vocabularies/slice"
 
 export default function ListVocabularies() {
@@ -22,19 +20,21 @@ export default function ListVocabularies() {
 
   useEffect(() => {
     dispatch(fetchVocabulariesThunk())
-  }, [])
+  }, [dispatch])
 
   return (
-    <main>
-      <section className="flex flex-col items-center">
-        <h1 className="mt-6 mb-6 text-4xl font-bold">Vocabularies</h1>
-        <Link className="btn btn-success mb-6" to="/new">
-          New vocabulary
-        </Link>
+    <main className="flex flex-col items-center">
+      {isLoading && <Loader />}
+      
+      <section>
+        <div className="py-6 sticky top-0 bg-[#1d232a]">
+          <h1 className="mb-6 text-4xl font-bold">Vocabularies</h1>
+          <Link className="btn btn-success" to="/new">
+            New vocabulary
+          </Link>
+        </div>
 
-        {isLoading && <Loader />}
-
-        <ul className="flex flex-col gap-5 max-h-[450px] overflow-y-auto">
+        <ul className="flex flex-col gap-5 pb-6">
           {vocabularies.map(vocabulary => {
             return (
               <li key={vocabulary.id}>
@@ -43,10 +43,7 @@ export default function ListVocabularies() {
                   <p>({vocabulary.exercise})</p>
                 </div>
                 <div className="flex gap-2">
-                  <Link
-                    className="btn btn-secondary"
-                    to={`/${vocabulary.id}`}
-                  >
+                  <Link className="btn btn-secondary" to={`/${vocabulary.id}`}>
                     Open
                   </Link>
                   <Link

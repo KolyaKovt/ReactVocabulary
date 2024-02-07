@@ -15,7 +15,7 @@ function App() {
       <Route path="/" element={<ListVocabularies />} />
       <Route path="/new" element={<NewVocabulary />} />
       <Route path="/rename/:id" element={<RenameVocabulary />} />
-      {/* <Route path="/:id" element={<OpenVocabulary />} /> */}
+      <Route path="/:id" element={<OpenVocabulary />} />
       {/* <Route
         path="/words/add"
         element={
