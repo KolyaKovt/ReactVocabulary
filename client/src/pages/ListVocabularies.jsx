@@ -14,8 +14,8 @@ import {
 } from "../redux/vocabularies/slice"
 
 export default function ListVocabularies() {
-  const vocabularies = useSelector(selectVocabularies)
   const dispatch = useDispatch()
+  const vocabularies = useSelector(selectVocabularies)
   const isLoading = useSelector(selectIsLoading)
 
   useEffect(() => {

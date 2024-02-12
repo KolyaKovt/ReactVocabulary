@@ -1,128 +1,133 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import PropTypes from "prop-types"
+import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
 
-const countOfStrins = 7;
-let indecies = [];
-let countOfGuessedWords = 0;
+const countOfStrins = 7
+let indecies = []
+let countOfGuessedWords = 0
 
-export default function ConnectingWords({ getVocabulary, incrementCountOfRep, escapeHandler }) {
+export default function ConnectingWords({
+  getVocabulary,
+  incrementCountOfRep,
+  escapeHandler,
+}) {
   const [vocabulary, setVocabulary] = useState({
     firstLang: [],
     secLang: [],
     name: "",
-  });
+  })
 
-  const escapeRef = useRef(null);
+  const escapeRef = useRef(null)
 
-  const [currIndFL, setCurrIndFL] = useState([]);
-  const [currIndSL, setCurrIndSL] = useState([]);
+  const [currIndFL, setCurrIndFL] = useState([])
+  const [currIndSL, setCurrIndSL] = useState([])
 
-  const [selectedFL, setSelectedFL] = useState(-1);
-  const [selectedSL, setSelectedSL] = useState(-1);
+  const [selectedFL, setSelectedFL] = useState(-1)
+  const [selectedSL, setSelectedSL] = useState(-1)
 
-  const [guessedIndFL, setGuessedIndFL] = useState([]);
-  const [guessedIndSL, setGuessedIndSL] = useState([]);
+  const [guessedIndFL, setGuessedIndFL] = useState([])
+  const [guessedIndSL, setGuessedIndSL] = useState([])
 
-  const [wrongAnswer, setWrongAnswer] = useState(false);
+  const [wrongAnswer, setWrongAnswer] = useState(false)
 
   useEffect(() => {
-    getVocabulary(setVocabulary);
+    getVocabulary(setVocabulary)
 
-    const handler = (e) => escapeHandler(e, escapeRef);
+    const handler = e => escapeHandler(e, escapeRef)
 
-    document.addEventListener("keydown", handler);
+    document.addEventListener("keydown", handler)
 
     return () => {
-      document.removeEventListener("keydown", handler);
-    };
-  }, []);
+      document.removeEventListener("keydown", handler)
+    }
+  }, [])
 
   useEffect(() => {
-    restart();
-  }, [vocabulary]);
+    restart()
+  }, [vocabulary])
 
   useEffect(() => {
-    if (selectedFL === -1 || selectedSL === -1) return;
+    if (selectedFL === -1 || selectedSL === -1) return
 
     if (currIndFL[selectedFL] === currIndSL[selectedSL]) {
-      setGuessedIndFL(current => [...current, selectedFL]);
-      setGuessedIndSL(current => [...current, selectedSL]);
-      countOfGuessedWords++;
-      clearSelected();
+      setGuessedIndFL(current => [...current, selectedFL])
+      setGuessedIndSL(current => [...current, selectedSL])
+      countOfGuessedWords++
+      clearSelected()
     } else {
-      setWrongAnswer(true);
+      setWrongAnswer(true)
       setTimeout(() => {
-        setWrongAnswer(false);
-        clearSelected();
-      }, 500);
+        setWrongAnswer(false)
+        clearSelected()
+      }, 500)
     }
 
-    if (vocabulary.firstLang.length - countOfGuessedWords === 0) incrementCountOfRep();
-  }, [selectedFL, selectedSL]);
+    if (vocabulary.firstLang.length - countOfGuessedWords === 0)
+      incrementCountOfRep()
+  }, [selectedFL, selectedSL])
 
   useEffect(() => {
     if (guessedIndFL.length === countOfStrins) {
-      clearButtons();
-      fillCurrentWords();
+      clearButtons()
+      fillCurrentWords()
     }
-  }, [guessedIndFL, guessedIndSL]);
+  }, [guessedIndFL, guessedIndSL])
 
   function clearSelected() {
-    setSelectedFL(-1);
-    setSelectedSL(-1);
+    setSelectedFL(-1)
+    setSelectedSL(-1)
   }
 
   function clearButtons() {
-    setGuessedIndFL([]);
-    setGuessedIndSL([]);
-    clearSelected();
+    setGuessedIndFL([])
+    setGuessedIndSL([])
+    clearSelected()
   }
 
   function restart() {
-    countOfGuessedWords = 0;
-    clearButtons();
-    getIndecies();
-    fillCurrentWords();
+    countOfGuessedWords = 0
+    clearButtons()
+    getIndecies()
+    fillCurrentWords()
   }
 
   function getIndecies() {
-    indecies = vocabulary.firstLang.map((el, i) => i);
+    indecies = vocabulary.firstLang.map((el, i) => i)
   }
 
   function fillCurrentWords() {
-    let fl = [];
-    let sl = [];
+    let fl = []
+    let sl = []
 
-    let minimal = Math.min(countOfStrins, indecies.length);
+    let minimal = Math.min(countOfStrins, indecies.length)
 
     for (let i = 0; i < minimal; i++) {
-      const rndIndex = getRandomNumber(0, indecies.length - 1);
+      const rndIndex = getRandomNumber(0, indecies.length - 1)
 
-      fl.push(indecies[rndIndex]);
-      sl.push(indecies[rndIndex]);
+      fl.push(indecies[rndIndex])
+      sl.push(indecies[rndIndex])
 
-      indecies.splice(rndIndex, 1);
+      indecies.splice(rndIndex, 1)
     }
 
-    shuffleArray(sl);
+    shuffleArray(sl)
 
-    setCurrIndFL(fl);
-    setCurrIndSL(sl);
+    setCurrIndFL(fl)
+    setCurrIndSL(sl)
   }
 
   function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min
   }
 
   function shuffleArray(array) {
     for (let i = 0; i < array.length; i++) {
-      let element = array[i];
-      let randomIndex = getRandomNumber(0, array.length - 1);
-      let anotherElement = array[randomIndex];
-      array[i] = anotherElement;
-      array[randomIndex] = element;
+      let element = array[i]
+      let randomIndex = getRandomNumber(0, array.length - 1)
+      let anotherElement = array[randomIndex]
+      array[i] = anotherElement
+      array[randomIndex] = element
     }
   }
 
@@ -153,8 +158,8 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep, es
                     : "")
                 }
                 onClick={() => {
-                  if (wrongAnswer) return;
-                  selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i);
+                  if (wrongAnswer) return
+                  selectedFL === i ? setSelectedFL(-1) : setSelectedFL(i)
                 }}
               >
                 {vocabulary.firstLang[wIndex]}
@@ -171,22 +176,22 @@ export default function ConnectingWords({ getVocabulary, incrementCountOfRep, es
                     : "")
                 }
                 onClick={() => {
-                  if (wrongAnswer) return;
-                  selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i);
+                  if (wrongAnswer) return
+                  selectedSL === i ? setSelectedSL(-1) : setSelectedSL(i)
                 }}
               >
                 {vocabulary.secLang[currIndSL[i]]}
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </main>
-  );
+  )
 }
 
 ConnectingWords.propTypes = {
   getVocabulary: PropTypes.func,
   incrementCountOfRep: PropTypes.func,
   escapeHandler: PropTypes.func,
-};
+}

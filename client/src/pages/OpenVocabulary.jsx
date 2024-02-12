@@ -19,31 +19,33 @@ export default function OpenVocabulary() {
   if (isLoading || !vocabulary) return <Loader />
 
   return (
-    <main>
-      <h1>
+    <main className="flex flex-col items-center">
+      <h1 className="my-6">
         {vocabulary.name} (count: {vocabulary.firstLang.length})
       </h1>
-      <Link className="btn btn-secondary" to="/">
-        Cancel
-      </Link>
-      <Link className="btn btn-success" to="/vocabulary/words/add">
-        Add words
-      </Link>
-      <Link className="btn btn-primary" to="/vocabulary/play/connecting-words">
-        Play connecting words
-      </Link>
-      <Link className="btn btn-dark" to="/vocabulary/play/guessing-words">
-        Play guessing word
-      </Link>
+      <div className="flex gap-2">
+        <Link className="btn btn-secondary" to="/">
+          Cancel
+        </Link>
+        <Link className="btn btn-success" to="add">
+          Add words
+        </Link>
+        <Link className="btn btn-primary" to="play/connecting-words">
+          Play connecting words
+        </Link>
+        <Link className="btn btn-dark" to="play/guessing-words">
+          Play guessing word
+        </Link>
+      </div>
       {vocabulary.firstLang.map((word, index) => {
         return (
-          <div className="container-for-word-pairs" key={index}>
-            <div className="word-pairs">
-              <div className="word">{word}</div>
-              <div className="word">{vocabulary.secLang[index]}</div>
+          <div className="" key={index}>
+            <div className="">
+              <div className="">{word}</div>
+              <div className="">{vocabulary.secLang[index]}</div>
             </div>
-            <div className="links">
-              <Link to="/vocabulary/words/change" className="btn btn-primary">
+            <div className="">
+              <Link to="change" className="btn btn-primary">
                 Change
               </Link>
               <a

@@ -1,53 +1,25 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
-import FormWord from "../components/_form_word";
+import { useEffect } from "react"
+import WordForm from "../components/WordForm"
+import { useDispatch, useSelector } from "react-redux"
+import { selectVocabulary } from "../redux/vocabularies/slice"
+import { useParams } from "react-router-dom"
+import { fetchVocabulary } from "../redux/vocabularies/operations"
 
-export default function AddWords({ getVocabulary, serverBase, escapeHandler }) {
-  const [vocabulary, setVocabulary] = useState({
-    firstLang: [],
-    secLang: [],
-    name: "",
-  });
-
-  const wordRef = useRef(null);
-  const translRef = useRef(null);
+export default function AddWords() {
+  const vocabulary = useSelector(selectVocabulary)
+  const { id } = useParams()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    getVocabulary(setVocabulary);
-  }, []);
+    dispatch(fetchVocabulary(id))
+  }, [dispatch, id])
 
-  function addWord(e) {
-    e.preventDefault();
-
-    wordRef.current.focus();
-
-    fetch(`${serverBase}/vocabulary/words/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: vocabulary.id,
-        word: wordRef.current.value,
-        transl: translRef.current.value,
-      }),
-    }).catch(e => console.error(e));
-
-    wordRef.current.value = "";
-    translRef.current.value = "";
-  }
+  const submit = () => {}
 
   return (
-    <main>
+    <main className="flex flex-col items-center">
       <h1>Adding words in: {vocabulary.name}</h1>
-      <FormWord wordRef={wordRef} translRef={translRef} submit={addWord} escapeHandler={escapeHandler} />
+      <WordForm submit={submit} />
     </main>
-  );
+  )
 }
-
-AddWords.propTypes = {
-  getVocabulary: PropTypes.func,
-  escapeHandler: PropTypes.func,
-  serverBase: PropTypes.string,
-};

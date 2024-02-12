@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormWord from "../components/_form_word";
+import WordForm from "../components/WordForm";
 
 export default function ChangeWords({ getVocabulary, serverBase, index, escapeHandler }) {
   const [vocabulary, setVocabulary] = useState({
@@ -48,7 +48,7 @@ export default function ChangeWords({ getVocabulary, serverBase, index, escapeHa
   return (
     <main>
       <h1>Changing words in: {vocabulary.name}</h1>
-      <FormWord wordRef={wordRef} translRef={translRef} submit={changeWord} escapeHandler={escapeHandler} />
+      <WordForm wordRef={wordRef} translRef={translRef} submit={changeWord} escapeHandler={escapeHandler} />
     </main>
   );
 }

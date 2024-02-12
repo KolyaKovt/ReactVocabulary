@@ -12,19 +12,15 @@ import GuessingWords from "../pages/GuessingWords"
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<ListVocabularies />} />
-      <Route path="/new" element={<NewVocabulary />} />
-      <Route path="/rename/:id" element={<RenameVocabulary />} />
-      <Route path="/:id" element={<OpenVocabulary />} />
-      {/* <Route
-        path="/words/add"
-        element={
-          <AddWords
-            getVocabulary={getVocabulary}
-            escapeHandler={escapeHandler}
-          />
-        }
-      /> */}
+      <Route path="/">
+        <Route index element={<ListVocabularies />} />
+        <Route path="new" element={<NewVocabulary />} />
+        <Route path="rename/:id" element={<RenameVocabulary />} />
+        <Route path=":id">
+          <Route index element={<OpenVocabulary />} />
+          <Route path="add" element={<AddWords />} />
+        </Route>
+      </Route>
       {/* <Route
         path="/words/change"
         element={
